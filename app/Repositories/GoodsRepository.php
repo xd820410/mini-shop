@@ -22,4 +22,9 @@ class GoodsRepository
     {
         return $this->model->get();
     }
+
+    public function getById($id)
+    {
+        return $this->model->where('id', $id)->first();
+    }
 }

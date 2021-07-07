@@ -66,9 +66,24 @@ class GoodsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id, GoodsService $goodsService)
     {
-        //
+        try {
+            $result = $goodsService->getById($id);
+            $returnMessage = [
+                'result' => 'SUCCESS',
+                'message' => $result,
+            ];
+
+            return response()->json($returnMessage, 200);
+        } catch (Exception $e) {
+            $errorMessage = [
+                'result' => 'ERROR',
+                'message' => $e->getMessage(),
+            ];
+
+            return response()->json($errorMessage, 404);
+        }
     }
 
     /**
