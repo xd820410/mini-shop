@@ -10,12 +10,14 @@ class GoodsTest extends TestCase
 {
     use RefreshDatabase;
 
+    //檢查http status
     public function test_getGoodsListHttpStatus()
     {
         $response = $this->get('/api/goods');
         $response->assertStatus(200);
     }
 
+    //檢查json結構
     public function test_getGoodsListResponseFormat()
     {
         $response = $this->get('/api/goods');
@@ -28,6 +30,7 @@ class GoodsTest extends TestCase
     }
 
     /**
+     * data provider應用
      * @dataProvider getGoodsTestData
      * @return void
      */
@@ -42,6 +45,7 @@ class GoodsTest extends TestCase
     }
 
     /**
+     * 從回應中取值、檢查json內的值
      * @dataProvider getGoodsTestData
      * @return void
      */
