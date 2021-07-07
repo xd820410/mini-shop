@@ -29,4 +29,14 @@ class GoodsService
     {
         return $this->goodsRepository->getAll();
     }
+
+    public function getById($id)
+    {
+        $result = $this->goodsRepository->getById($id);
+        if (empty($result)) {
+            throw new Exception('Resource not found.');
+        }
+
+        return $result;
+    }
 }
