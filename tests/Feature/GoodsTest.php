@@ -27,25 +27,6 @@ class GoodsTest extends TestCase
                                         ]]);
     }
 
-    // /**
-    //  * @dataProvider getGoodsTestData
-    //  * @return void
-    //  */
-    // public function test_creatGoodsDefaultValue($testResource, $exceptedDescription)
-    // {
-    //     $response = $this->postJson('/api/goods', $testResource);
-
-    //     //$response->decodeResponseJson()['message']['description']
-
-    //     $response->dump();
-
-    //     $response->assertJson([
-    //                             'message' => [
-    //                                 'description' => $exceptedDescription
-    //                             ]
-    //                         ], true);
-    // }
-
     /**
      * @dataProvider getGoodsTestData
      * @return void
@@ -58,6 +39,24 @@ class GoodsTest extends TestCase
                                     'message' => [
                                         'title'
                                     ]]);
+    }
+
+    /**
+     * @dataProvider getGoodsTestData
+     * @return void
+     */
+    public function test_creatGoodsDefaultValue($testResource, $exceptedDescription)
+    {
+        $result = $this->postJson('/api/goods', $testResource);
+        $goodsId = $result->decodeResponseJson()['message']['id'];
+
+        $response = $this->get('/api/goods/' . $goodsId);
+        //$response->dump();
+        $response->assertJson([
+                                'message' => [
+                                    'description' => $exceptedDescription
+                                ]
+                            ], true);
     }
 
     /**
