@@ -30,7 +30,7 @@ class GoodsTest extends TestCase
     }
 
     /**
-     * data provider應用
+     * 檢查json結構(data provider應用)
      * @dataProvider getGoodsTestData
      * @return void
      */
@@ -42,6 +42,17 @@ class GoodsTest extends TestCase
                                     'message' => [
                                         'title'
                                     ]]);
+    }
+
+    /**
+     * 回應是否為201
+     * @dataProvider getGoodsTestData
+     * @return void
+     */
+    public function test_creatGoodsSuccessfully($testResource, $exceptedDescription)
+    {
+        $response = $this->postJson('/api/goods', $testResource);
+        $response->assertCreated();
     }
 
     /**
