@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Services\GoodsService;
 use App\Http\Requests\CreateGoods;
+use Illuminate\Http\Response;
 use Exception;
 
 class GoodsController extends Controller
@@ -23,14 +24,14 @@ class GoodsController extends Controller
                 'message' => $result,
             ];
 
-            return response()->json($returnMessage, 200);
+            return response()->json($returnMessage, Response::HTTP_OK);
         } catch (Exception $e) {
             $errorMessage = [
                 'result' => 'ERROR',
                 'message' => $e->getMessage(),
             ];
 
-            return response()->json($errorMessage, 404);
+            return response()->json($errorMessage, Response::HTTP_NOT_FOUND);
         }
     }
 
@@ -49,14 +50,14 @@ class GoodsController extends Controller
                 'message' => $result,
             ];
 
-            return response()->json($returnMessage, 201);
+            return response()->json($returnMessage, Response::HTTP_CREATED);
         } catch (Exception $e) {
             $errorMessage = [
                 'result' => 'ERROR',
                 'message' => $e->getMessage(),
             ];
 
-            return response()->json($errorMessage, 404);
+            return response()->json($errorMessage, Response::HTTP_NOT_FOUND);
         }
     }
 
@@ -75,14 +76,14 @@ class GoodsController extends Controller
                 'message' => $result,
             ];
 
-            return response()->json($returnMessage, 200);
+            return response()->json($returnMessage, Response::HTTP_OK);
         } catch (Exception $e) {
             $errorMessage = [
                 'result' => 'ERROR',
                 'message' => $e->getMessage(),
             ];
 
-            return response()->json($errorMessage, 404);
+            return response()->json($errorMessage, Response::HTTP_NOT_FOUND);
         }
     }
 
