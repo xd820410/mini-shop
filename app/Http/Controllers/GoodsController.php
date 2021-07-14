@@ -49,7 +49,7 @@ class GoodsController extends Controller
                 'message' => $result,
             ];
 
-            return response()->json($returnMessage, 200);
+            return response()->json($returnMessage, 201);
         } catch (Exception $e) {
             $errorMessage = [
                 'result' => 'ERROR',
