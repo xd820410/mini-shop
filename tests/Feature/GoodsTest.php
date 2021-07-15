@@ -75,6 +75,32 @@ class GoodsTest extends TestCase
     }
 
     /**
+     * 回應是否為204
+     * @dataProvider getGoodsTestData
+     * @return void
+     */
+    public function test_updateGoodsSuccessfully($testResource, $exceptedDescription)
+    {
+        $result = $this->postJson('/api/goods', $testResource);
+        $goodsId = $result->decodeResponseJson()['message']['id'];
+
+        //$response = $this->patchJson('/api/goods/99999', $testResource);
+        $response = $this->patchJson('/api/goods/' . $goodsId, $testResource);
+        $response->assertNoContent();
+    }
+
+    /**
+     * 回應是否為404
+     * @dataProvider getGoodsTestData
+     * @return void
+     */
+    public function test_failToUpdateGoods($testResource, $exceptedDescription)
+    {
+        $response = $this->patchJson('/api/goods/99999', $testResource);
+        $response->assertNotFound();
+    }
+
+    /**
      * @return array[]
      */
     public function getGoodsTestData()

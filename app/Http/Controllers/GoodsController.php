@@ -94,9 +94,24 @@ class GoodsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $id, GoodsService $goodsService)
     {
-        //
+        try {
+            $result = $goodsService->updateById($id, $request->input());
+            $returnMessage = [
+                'result' => 'SUCCESS',
+                'message' => $result,
+            ];
+
+            return response()->json($returnMessage, Response::HTTP_NO_CONTENT);
+        } catch (Exception $e) {
+            $errorMessage = [
+                'result' => 'ERROR',
+                'message' => $e->getMessage(),
+            ];
+
+            return response()->json($errorMessage, Response::HTTP_NOT_FOUND);
+        }
     }
 
     /**
@@ -105,8 +120,23 @@ class GoodsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id, GoodsService $goodsService)
     {
-        //
+        try {
+            $result = $goodsService->deleteById($id);
+            $returnMessage = [
+                'result' => 'SUCCESS',
+                'message' => $result,
+            ];
+
+            return response()->json($returnMessage, Response::HTTP_NO_CONTENT);
+        } catch (Exception $e) {
+            $errorMessage = [
+                'result' => 'ERROR',
+                'message' => $e->getMessage(),
+            ];
+
+            return response()->json($errorMessage, Response::HTTP_NOT_FOUND);
+        }
     }
 }

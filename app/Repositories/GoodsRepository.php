@@ -27,4 +27,14 @@ class GoodsRepository
     {
         return $this->model->where('id', $id)->first();
     }
+
+    public function updateById($id, $data)
+    {
+        return $this->model->where('id', $id)->update($data);
+    }
+
+    public function deleteById($id)
+    {
+        return $this->model->where('id', $id)->delete();
+    }
 }

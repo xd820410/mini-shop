@@ -39,4 +39,22 @@ class GoodsService
 
         return $result;
     }
+
+    public function updateById($id, $data)
+    {
+        $result = $this->goodsRepository->getById($id);
+        if (empty($result)) {
+            throw new Exception('Resource not found.');
+        }
+        $this->goodsRepository->updateById($id, $data);
+    }
+
+    public function deleteById($id)
+    {
+        $result = $this->goodsRepository->getById($id);
+        if (empty($result)) {
+            throw new Exception('Resource not found.');
+        }
+        $this->goodsRepository->deleteById($id);
+    }
 }
