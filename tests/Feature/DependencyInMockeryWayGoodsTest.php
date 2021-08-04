@@ -42,4 +42,10 @@ class DependencyInMockeryWayGoodsTest extends TestCase
         //dd($response);
         $response->assertNoContent();
     }
+
+    public function tearDown(): void
+    {
+        $this->mock = null;
+        $this->target = null;
+    }
 }
