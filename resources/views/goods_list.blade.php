@@ -6,6 +6,15 @@
         <title>商品一覽</title>
         <link href="{{ asset('css/app.css') }}" rel="stylesheet">
         <link href="{{ asset('css/bootstrap/bootstrap.min.css') }}" rel="stylesheet">
+        <link href="{{ asset('css/font-awesome5/pro.min.css') }}" rel="stylesheet">
+        <style>
+            .fa-shopping-cart {
+                display: inline-block;
+                font-size: 20px;
+                line-height: 40px;
+                text-align: center;
+            }
+        </style>
     </head>
     <body>
         <div>
@@ -55,6 +64,10 @@
                                     </div>
                                 </li>
                             @endguest
+                                <li class="nav-item">
+                                    <span><i class="fas fa-shopping-cart"></i></span>
+                                    <!-- style="display: flex; align-items: center;" &nbsp; -->
+                                </li>
                         </ul>
                     </div>
                 </div>
@@ -105,10 +118,13 @@
     </body>
 
     <script src="{{ asset('js/jquery-3.4.1.min.js') }}"></script>
+    <!-- <script src="{{ asset('js/bootstrap/popper.min.js') }}"></script> -->
     <script src="{{ asset('js/bootstrap/bootstrap.min.js') }}"></script>
+    <!-- <script src="{{ asset('js/bootstrap/bootstrap.bundle.min.js') }}"></script> -->
     <script src="{{ asset('js/helper.js') }}"></script>
     <script>
         var baseUrl = "{{ url('/') }}"
+
     </script>
     <script src="{{ asset('js/goods_list.js') }}"></script>
 </html>
