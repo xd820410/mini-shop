@@ -15,6 +15,7 @@
                 text-align: center;
             }
         </style>
+        <script src="{{ asset('js/app.js') }}" defer></script>
     </head>
     <body>
         <div>
@@ -125,16 +126,15 @@
                 <p>Try scrolling the rest of the page to see this option in action.</p>
             </div>
         </div>
+
+        <script src="{{ asset('js/jquery-3.4.1.min.js') }}"></script>
+        <!-- <script src="{{ asset('js/bootstrap/popper.min.js') }}"></script> -->
+        <script src="{{ asset('js/bootstrap/bootstrap.min.js') }}"></script>
+        <!-- <script src="{{ asset('js/bootstrap/bootstrap.bundle.min.js') }}"></script> -->
+        <script src="{{ asset('js/helper.js') }}"></script>
+        <script>
+            var baseUrl = "{{ url('/') }}"
+        </script>
+        <script src="{{ asset('js/goods_list.js') }}"></script>
     </body>
-
-    <script src="{{ asset('js/jquery-3.4.1.min.js') }}"></script>
-    <!-- <script src="{{ asset('js/bootstrap/popper.min.js') }}"></script> -->
-    <script src="{{ asset('js/bootstrap/bootstrap.min.js') }}"></script>
-    <!-- <script src="{{ asset('js/bootstrap/bootstrap.bundle.min.js') }}"></script> -->
-    <script src="{{ asset('js/helper.js') }}"></script>
-    <script>
-        var baseUrl = "{{ url('/') }}"
-
-    </script>
-    <script src="{{ asset('js/goods_list.js') }}"></script>
 </html>
