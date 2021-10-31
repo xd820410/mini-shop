@@ -24,7 +24,22 @@ async function showGoodsList() {
 
 function bindAddToCartEvent() {
     jQuery(".add-to-cart").unbind().click(function() {
-        console.log(jQuery(this).data('goods-id'))
+        console.log('goods-id', jQuery(this).data('goods-id'))
+
+        var sendData = new Object()
+        sendData.goods_id = jQuery(this).data('goods-id')
+        sendData.quantity = 1
+        sendData._token = document.head.querySelector('meta[name="csrf-token"]').content
+        /**
+         * @todo 'html csrf meta' to real meta
+         */
+
+        jQuery.post(baseUrl + '/cart', sendData)
+        .done(function(response) {
+            console.log('AddToCart response', response)
+        }).fail(function() {
+            console.log("fail to AddToCart")
+        })
     })
 }
 
