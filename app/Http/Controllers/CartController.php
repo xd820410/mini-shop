@@ -12,15 +12,15 @@ use Illuminate\Support\Arr;
 
 class CartController extends Controller
 {
-    public function addToCart(AddToCart $request, CartService $cartService, GoodsService $goodsService)
+    public function addToCart(AddToCart $request, CartService $cartService)
     {
         try {
             //return $request->input();
-            return $request->session()->all();
-            return $cartService->addToCart(Arr::except($request->input(), ['_token']));
+            //return $request->session()->all();
+            $result = $cartService->addToCart(Arr::except($request->input(), ['_token']));
             $returnMessage = [
                 'result' => 'SUCCESS',
-                'message' => 'Goods ' . $request->input('goods_id') . ' is in your cart now.',
+                'content' => $result,
             ];
 
             return response()->json($returnMessage, Response::HTTP_CREATED);
