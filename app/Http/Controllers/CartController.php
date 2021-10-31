@@ -12,12 +12,17 @@ use Illuminate\Support\Arr;
 
 class CartController extends Controller
 {
-    public function addToCart(AddToCart $request, CartService $cartService)
+    public function addItemToCart(AddToCart $request, CartService $cartService)
     {
         try {
-            //return $request->input();
-            //return $request->session()->all();
-            $result = $cartService->addToCart(Arr::except($request->input(), ['_token']));
+            $checkItemInCart = $cartService->checkItemInCart(Arr::except($request->input(), ['_token']));
+
+            if ($checkItemInCart === true) {
+                $result = $cartService->updateItemInCart(Arr::except($request->input(), ['_token']));
+            } else {
+                $result = $cartService->addItemToCart(Arr::except($request->input(), ['_token']));
+            }
+
             $returnMessage = [
                 'result' => 'SUCCESS',
                 'content' => $result,
