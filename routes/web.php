@@ -21,4 +21,6 @@ Route::get('/', function () {
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-Route::post('cart', 'CartController@addItemToCart');
+Route::post('/cart', 'CartController@addItemToCart');
+
+Route::get('/orm-test', 'CartController@test');

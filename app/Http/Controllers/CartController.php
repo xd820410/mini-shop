@@ -2,16 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Requests\AddToCart;
 use App\Services\CartService;
 use App\Services\GoodsService;
 use Exception;
 use Illuminate\Support\Arr;
+use App\Models\User;
 
 class CartController extends Controller
 {
+    public function test()
+    {
+        return User::with('permissions')->get();
+    }
+
     public function addItemToCart(AddToCart $request, CartService $cartService)
     {
         try {
