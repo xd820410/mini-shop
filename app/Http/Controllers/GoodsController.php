@@ -139,4 +139,9 @@ class GoodsController extends Controller
             return response()->json($errorMessage, Response::HTTP_NOT_FOUND);
         }
     }
+
+    public function showGoodsManager()
+    {
+        return view('manager.goods');
+    }
 }

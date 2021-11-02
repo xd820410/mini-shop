@@ -21,6 +21,12 @@ Route::get('/', function () {
 
 Route::get('/home', 'HomeController@index')->name('home');
 
+//管理員可看
+Route::group(['prefix' => 'manager',  'middleware' => 'manager'], function()
+{
+    Route::get('/goods', 'GoodsController@showGoodsManager');
+});
+
 Route::post('/cart', 'CartController@addItemToCart');
 
 Route::get('/orm-test', 'CartController@test');

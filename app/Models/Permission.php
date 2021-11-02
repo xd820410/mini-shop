@@ -10,7 +10,7 @@ class Permission extends Model
 {
     use HasFactory, SoftDeletes;
 
-    const administrator = 0;
+    const administrator = 1;
 
     protected $fillable = [
         'user_id', 'right'
