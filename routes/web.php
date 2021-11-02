@@ -22,9 +22,9 @@ Route::get('/', function () {
 Route::get('/home', 'HomeController@index')->name('home');
 
 //管理員可看
-Route::group(['prefix' => 'manager',  'middleware' => 'manager'], function()
-{
-    Route::get('/goods', 'GoodsController@showGoodsManager');
+Route::group(['prefix' => 'manager',  'middleware' => 'manager'], function () {
+    Route::get('/get_token', 'ManagerController@getToken');
+    Route::get('/goods', 'ManagerController@showGoodsManager');
 });
 
 Route::post('/cart', 'CartController@addItemToCart');

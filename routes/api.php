@@ -18,4 +18,7 @@ use Illuminate\Support\Facades\Route;
 //     return $request->user();
 // });
 
-Route::resource('goods', 'GoodsController', ['except' => ['create', 'edit']]);
+Route::get('/goods', 'GoodsController@index');
+Route::middleware(['auth:sanctum', 'sanctum.can_edit'])->group(function () {
+    Route::resource('/goods', 'GoodsController', ['except' => ['index', 'create', 'edit']]);
+});
