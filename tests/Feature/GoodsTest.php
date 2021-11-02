@@ -8,7 +8,7 @@ use Tests\TestCase;
 
 class GoodsTest extends TestCase
 {
-    use RefreshDatabase;
+    //use RefreshDatabase;
 
     //檢查http status
     public function test_getGoodsListHttpStatus()
@@ -107,7 +107,7 @@ class GoodsTest extends TestCase
     {
         return [
             [
-                ['title' => '漢堡王早餐券', 'price' => 200],
+                ['title' => '高級漢堡王早餐券', 'price' => 200],
                 null
             ],
             [
