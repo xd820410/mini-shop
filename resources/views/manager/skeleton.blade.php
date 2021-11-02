@@ -17,23 +17,15 @@
         <script src="{{ asset('js/bootstrap/bootstrap.min.js') }}"></script>
         <!-- <script src="{{ asset('js/bootstrap/bootstrap.bundle.min.js') }}"></script> -->
         <script src="{{ asset('js/helper.js') }}"></script>
-        <script src="{{ asset('js/mini_cart.js') }}"></script>
 
         <!-- Fonts -->
         <!-- <link rel="dns-prefetch" href="//fonts.gstatic.com"> -->
         <!-- <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet"> -->
-        <link href="{{ asset('css/font-awesome5/pro.min.css') }}" rel="stylesheet">
 
         <!-- Styles -->
         <link href="{{ asset('css/app.css') }}" rel="stylesheet">
         <link href="{{ asset('css/bootstrap/bootstrap.min.css') }}" rel="stylesheet">
         <style>
-            .fa-shopping-cart {
-                display: inline-block;
-                font-size: 20px;
-                line-height: 40px;
-                text-align: center;
-            }
         </style>
     </head>
     <body>
@@ -42,7 +34,6 @@
 
             <main class="py-4">
                 @yield('content')
-                @include('mini_cart')
             </main>
         </div>
 
