@@ -19,6 +19,10 @@ class DependencyInMockeryWayGoodsTest extends TestCase
 
         $this->mock = $this->initMock(\App\Services\GoodsService::class);
         $this->target = $this->app->make(GoodsController::class);
+
+        config([
+            'database.connections.mysql.database' => env('DB_TEST_DATABASE', 'test_dbname')
+        ]);
     }
 
     public function getToken()
@@ -53,5 +57,10 @@ class DependencyInMockeryWayGoodsTest extends TestCase
         ])->patchJson('/api/goods/948787', $requestInput);
         //dd($response);
         $response->assertNoContent();
+    }
+
+    public function tearDown(): void
+    {
+        parent::tearDown();
     }
 }

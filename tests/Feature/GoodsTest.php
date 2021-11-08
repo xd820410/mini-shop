@@ -12,6 +12,15 @@ class GoodsTest extends TestCase
 
     protected $token;
 
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        config([
+            'database.connections.mysql.database' => env('DB_TEST_DATABASE', 'test_dbname')
+        ]);
+    }
+
     public function getToken()
     {
         $this->postJson('/login', [
@@ -167,5 +176,10 @@ class GoodsTest extends TestCase
                 '不要撿'
             ]
         ];
+    }
+
+    public function tearDown(): void
+    {
+        parent::tearDown();
     }
 }
