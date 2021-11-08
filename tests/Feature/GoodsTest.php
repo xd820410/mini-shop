@@ -10,10 +10,43 @@ class GoodsTest extends TestCase
 {
     //use RefreshDatabase;
 
+    protected $token;
+
+    public function getToken()
+    {
+        $this->postJson('/login', [
+            'email' => config('app.admin_account', 'enter admin account'),
+            'password' => config('app.admin_password', 'enter admin password'),
+            '_token' => csrf_token()
+        ]);
+        $response = $this->get('/manager/get_token');
+
+        $this->token = $response->decodeResponseJson()['token'];
+    }
+
+    //取token成功不
+    public function test_getToken()
+    {
+        $this->postJson('/login', [
+            'email' => config('app.admin_account', 'enter admin account'),
+            'password' => config('app.admin_password', 'enter admin password'),
+            '_token' => csrf_token()
+        ]);
+        $response = $this->get('/manager/get_token');
+
+        $this->token = $response->decodeResponseJson()['token'];
+
+        $response->assertJsonStructure([
+            'result',
+            'token'
+        ]);
+    }
+
     //檢查http status
     public function test_getGoodsListHttpStatus()
     {
         $response = $this->get('/api/goods');
+        //dd($response);
         $response->assertStatus(200);
     }
 
@@ -21,12 +54,14 @@ class GoodsTest extends TestCase
     public function test_getGoodsListResponseFormat()
     {
         $response = $this->get('/api/goods');
-        $response->assertJsonStructure(['result',
-                                        'message' => [
-                                            '*' => [
-                                                'title'
-                                            ]
-                                        ]]);
+        $response->assertJsonStructure([
+            'result',
+            'message' => [
+                '*' => [
+                    'title'
+                ]
+            ]
+        ]);
     }
 
     /**
@@ -36,12 +71,16 @@ class GoodsTest extends TestCase
      */
     public function test_creatGoodsResponseFormat($testResource, $exceptedDescription)
     {
-        $response = $this->postJson('/api/goods', $testResource);
-        $response
-            ->assertJsonStructure(['result',
-                                    'message' => [
-                                        'title'
-                                    ]]);
+        $this->getToken();
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $this->token,
+        ])->postJson('/api/goods', $testResource);
+        $response->assertJsonStructure([
+            'result',
+            'message' => [
+                'title'
+            ]
+        ]);
     }
 
     /**
@@ -51,7 +90,11 @@ class GoodsTest extends TestCase
      */
     public function test_creatGoodsSuccessfully($testResource, $exceptedDescription)
     {
-        $response = $this->postJson('/api/goods', $testResource);
+        $this->getToken();
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $this->token,
+        ])->postJson('/api/goods', $testResource);
+        //$response->dumpHeaders();
         $response->assertCreated();
     }
 
@@ -62,16 +105,19 @@ class GoodsTest extends TestCase
      */
     public function test_creatGoodsDefaultValue($testResource, $exceptedDescription)
     {
-        $result = $this->postJson('/api/goods', $testResource);
+        $this->getToken();
+        $result = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $this->token,
+        ])->postJson('/api/goods', $testResource);
         $goodsId = $result->decodeResponseJson()['message']['id'];
 
         $response = $this->get('/api/goods/' . $goodsId);
         //$response->dump();
         $response->assertJson([
-                                'message' => [
-                                    'description' => $exceptedDescription
-                                ]
-                            ], true);
+            'message' => [
+                'description' => $exceptedDescription
+            ]
+        ], true);
     }
 
     /**
@@ -81,7 +127,10 @@ class GoodsTest extends TestCase
      */
     public function test_updateGoodsSuccessfully($testResource, $exceptedDescription)
     {
-        $result = $this->postJson('/api/goods', $testResource);
+        $this->getToken();
+        $result = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $this->token,
+        ])->postJson('/api/goods', $testResource);
         $goodsId = $result->decodeResponseJson()['message']['id'];
 
         //$response = $this->patchJson('/api/goods/99999', $testResource);
@@ -96,7 +145,10 @@ class GoodsTest extends TestCase
      */
     public function test_failToUpdateGoods($testResource, $exceptedDescription)
     {
-        $response = $this->patchJson('/api/goods/99999', $testResource);
+        $this->getToken();
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $this->token,
+        ])->patchJson('/api/goods/99999', $testResource);
         $response->assertNotFound();
     }
 

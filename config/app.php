@@ -230,4 +230,9 @@ return [
 
     ],
 
+    /**
+     * account & password for admin test
+     */
+    'admin_account' => env('ADMIN_ACCOUNT'),
+    'admin_password' => env('ADMIN_PASSWORD'),
 ];

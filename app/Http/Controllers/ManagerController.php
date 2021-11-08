@@ -20,7 +20,7 @@ class ManagerController extends Controller
             $token = $request->user()->createToken('editor', ['edit'])->plainTextToken;
             $returnMessage = [
                 'result' => 'SUCCESS',
-                'content' => $token,
+                'token' => $token,
             ];
 
             return response()->json($returnMessage, Response::HTTP_OK);
