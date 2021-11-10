@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\GoodsService;
+use App\Services\ImageProccessingService;
 use App\Http\Requests\CreateGoods;
 use Illuminate\Http\Response;
+use Illuminate\Support\Arr;
 use Exception;
 
 class GoodsController extends Controller
@@ -41,9 +43,16 @@ class GoodsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(CreateGoods $request, GoodsService $goodsService)
+    public function store(CreateGoods $request, GoodsService $goodsService, ImageProccessingService $imageProccessingService)
     {
         try {
+            if ($request->hasFile('image') && !empty($request->file('image'))) {
+                //return $request->file('image');
+                $imagePath = $imageProccessingService->squareAndSave($request->file('image'));
+                $request->merge(['image_path' => $imagePath]);
+            }
+
+            //return $request->input();
             $result = $goodsService->create($request->input());
             $returnMessage = [
                 'result' => 'SUCCESS',
@@ -94,10 +103,25 @@ class GoodsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id, GoodsService $goodsService)
+    public function update(Request $request, $id, GoodsService $goodsService, ImageProccessingService $imageProccessingService)
     {
         try {
-            $result = $goodsService->updateById($id, $request->input());
+            if ($request->hasFile('image') && !empty($request->file('image'))) {
+                /**
+                 * 可判斷可不判斷，反正才一條query
+                 */
+                // $goodsData = $goodsService->getById($id);
+                // if (!empty($goodsData['image_path'])) {
+                //     $imageProccessingService->deleteGoodsImageByGoodsId($id);
+                // }
+                $imageProccessingService->deleteGoodsImageByGoodsId($id);
+
+                $imagePath = $imageProccessingService->squareAndSave($request->file('image'));
+                $request->merge(['image_path' => $imagePath]);
+            }
+
+            //return $request->input();
+            $result = $goodsService->updateById($id, Arr::except($request->input(), ['_method']));
             $returnMessage = [
                 'result' => 'SUCCESS',
                 'message' => $result,

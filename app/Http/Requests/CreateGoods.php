@@ -27,7 +27,8 @@ class CreateGoods extends FormRequest
             'title' => 'required|string',
             'description' => 'nullable|string',
             'price' => 'required|integer|min:0|max:2147483647',
-            'image_path' => 'nullable|string'
+            'image_path' => 'nullable|string',
+            'image' => 'nullable|image',
         ];
     }
 }

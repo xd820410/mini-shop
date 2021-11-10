@@ -38,7 +38,7 @@ function bindAddToCartEvent() {
         .done(function(response) {
             console.log('AddToCart response', response)
         }).fail(function() {
-            console.log("fail to AddToCart")
+            console.log('fail to AddToCart')
         })
     })
 }
