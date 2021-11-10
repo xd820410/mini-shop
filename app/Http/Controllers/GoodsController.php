@@ -45,7 +45,7 @@ class GoodsController extends Controller
     public function store(CreateGoods $request, GoodsService $goodsService, ImageProccessingService $imageProccessingService)
     {
         try {
-            if ($request->file('image')) {
+            if ($request->hasFile('image')) {
                 //return $request->file('image');
                 $imagePath = $imageProccessingService->squareAndSave($request->file('image'));
                 $request->merge(['image_path' => $imagePath]);
