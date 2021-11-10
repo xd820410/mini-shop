@@ -10,7 +10,36 @@ function wipe() {
     jQuery("#alert-block").hide()
 }
 
+function columnValidate(name, price) {
+    var requireColumn = ''
+    if (name.length < 1) {
+        requireColumn += 'Name'
+    }
+    if (price.length < 1) {
+        if (requireColumn.length > 0) {
+            requireColumn += ', '
+        }
+        requireColumn += 'Price'
+    }
+
+    var message = false
+    if (requireColumn.length > 0) {
+        message = requireColumn + ' must be filled.'
+    }
+
+    return message
+}
+
 function createGoods() {
+    var message = ''
+    var status = 'fail'
+
+    var responseOfColumnValidate = columnValidate(jQuery("#new-name").val(), jQuery("#new-price").val())
+    if (responseOfColumnValidate !== false) {
+        showMessage(responseOfColumnValidate, 'fail')
+        return
+    }
+
     var formData = new FormData()
     formData.append('title', jQuery("#new-name").val())
     formData.append('description', jQuery("#new-description").val())
@@ -27,8 +56,7 @@ function createGoods() {
         headers: {"Authorization": "Bearer 236|y1AoZjmfmpb9lrpNCmxYvuQsU7S74HYpyKNsqvgq"},
         contentType: false,
     }).done(function(response, textStatus, jqXHR) {
-        var message = '發生錯誤，請點擊F12並切換到Console頁籤，將內容截圖提供給開發廠商'
-        var status = 'fail'
+        message = '發生錯誤，請點擊F12並切換到Console頁籤，將內容截圖提供給開發廠商'
         if (jqXHR.status == '201') {
             message = 'Created successfully.'
             status = 'success'
@@ -41,8 +69,10 @@ function createGoods() {
         if (jqXHR.status != '201') {
             console.log('error on createGoods:', response)
         }
-    }).fail(function() {
-        console.log('fail to createGoods')
+    }).fail(function(jqXHR, textStatus, errorThrown) {
+        message = '發生錯誤，請點擊F12並切換到Console頁籤，將內容截圖提供給開發廠商'
+        showMessage(message, status)
+        console.log('fail to createGoods: ', jqXHR.responseText)
     })
 }
 
@@ -93,11 +123,21 @@ function getGoodsList() {
 }
 
 function updateGoods(goodsId) {
-    //console.log('goodsId', goodsId)
+    var message = ''
+    var status = 'fail'
+
+    var name = jQuery("#name-" + goodsId).val()
+    var price = jQuery("#price-" + goodsId).val()
+    var responseOfColumnValidate = columnValidate(name, price)
+    if (responseOfColumnValidate !== false) {
+        showMessage(responseOfColumnValidate, 'fail')
+        return
+    }
+
     var formData = new FormData()
-    formData.append('title', jQuery("#name-" + goodsId).val())
+    formData.append('title', name)
     formData.append('description', jQuery("#description-" + goodsId).val())
-    formData.append('price', jQuery("#price-" + goodsId).val())
+    formData.append('price', price)
     if (typeof jQuery("#image-" + goodsId)[0].files[0] !== 'undefined') {
         formData.append('image', jQuery("#image-" + goodsId)[0].files[0])
     }
@@ -111,8 +151,7 @@ function updateGoods(goodsId) {
         headers: {"Authorization": "Bearer 236|y1AoZjmfmpb9lrpNCmxYvuQsU7S74HYpyKNsqvgq"},
         contentType: false,
     }).done(function(response, textStatus, jqXHR) {
-        var message = '發生錯誤，請點擊F12並切換到Console頁籤，將內容截圖提供給開發廠商'
-        var status = 'fail'
+        message = '發生錯誤，請點擊F12並切換到Console頁籤，將內容截圖提供給開發廠商'
         if (jqXHR.status == '204') {
             message = 'Updated successfully.'
             status = 'success'
@@ -125,8 +164,10 @@ function updateGoods(goodsId) {
         if (jqXHR.status != '204') {
             console.log('error on updateGoods:', response)
         }
-    }).fail(function() {
-        console.log('fail to updateGoods')
+    }).fail(function(jqXHR, textStatus, errorThrown) {
+        message = '發生錯誤，請點擊F12並切換到Console頁籤，將內容截圖提供給開發廠商'
+        showMessage(message, status)
+        console.log('fail to updateGoods: ', jqXHR.responseText)
     })
 }
 
@@ -181,7 +222,10 @@ function deleteGoods(goodsId) {
         if (jqXHR.status != '204') {
             console.log('error on deleteGoods:', response)
         }
-    }).fail(function() {
-        console.log('fail to deleteGoods')
+    }).fail(function(jqXHR, textStatus, errorThrown) {
+        var message = '發生錯誤，請點擊F12並切換到Console頁籤，將內容截圖提供給開發廠商'
+        var status = 'fail'
+        showMessage(message, status)
+        console.log('fail to deleteGoods: ', jqXHR.responseText)
     })
 }
