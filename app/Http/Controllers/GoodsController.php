@@ -107,6 +107,15 @@ class GoodsController extends Controller
     {
         try {
             if ($request->hasFile('image') && !empty($request->file('image'))) {
+                /**
+                 * 可判斷可不判斷，反正才一條query
+                 */
+                // $goodsData = $goodsService->getById($id);
+                // if (!empty($goodsData['image_path'])) {
+                //     $imageProccessingService->deleteGoodsImageByGoodsId($id);
+                // }
+                $imageProccessingService->deleteGoodsImageByGoodsId($id);
+
                 $imagePath = $imageProccessingService->squareAndSave($request->file('image'));
                 $request->merge(['image_path' => $imagePath]);
             }

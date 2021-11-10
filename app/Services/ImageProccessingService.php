@@ -6,9 +6,31 @@ use Exception;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
+use App\Repositories\GoodsRepository;
 
 class ImageProccessingService
 {
+    protected $goodsRepository;
+
+    public function __construct(GoodsRepository $goodsRepository)
+    {
+        $this->goodsRepository = $goodsRepository;
+    }
+
+    public function deleteGoodsImageByGoodsId($goodsId)
+    {
+        $goodsData = $this->goodsRepository->getById($goodsId);
+        if (empty($goodsData)) {
+            throw new Exception('Resource not found.');
+        }
+
+        if (!empty($goodsData['image_path'])) {
+            //path sampe: /storage/images/goods/snow_sanpaiBC1636566542.jpg
+            $imagePathSplit = explode('/storage', $goodsData['image_path'], 2);
+            Storage::delete('public' . $imagePathSplit[1]);
+        }
+    }
+
     public function squareAndSave($tempImage)
     {
         $image = Image::make($tempImage);
