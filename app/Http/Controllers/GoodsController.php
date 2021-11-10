@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\GoodsService;
+use App\Services\ImageProccessingService;
 use App\Http\Requests\CreateGoods;
 use Illuminate\Http\Response;
 use Exception;
@@ -41,9 +42,16 @@ class GoodsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(CreateGoods $request, GoodsService $goodsService)
+    public function store(CreateGoods $request, GoodsService $goodsService, ImageProccessingService $imageProccessingService)
     {
         try {
+            if ($request->file('image')) {
+                //return $request->file('image');
+                $imagePath = $imageProccessingService->squareAndSave($request->file('image'));
+                $request->merge(['image_path' => $imagePath]);
+            }
+
+            return $request->input();
             $result = $goodsService->create($request->input());
             $returnMessage = [
                 'result' => 'SUCCESS',

@@ -31,7 +31,7 @@
         <!-- goods card sample -->
         <div class="col-4 mb-3 goods-card-sample" id="goods-card-sample" style="display: none;">
             <div class="card" style="width: 100%;">
-                <img src="{{ asset('images/coming_soon.jpg') }}" class="card-img-top goods-image">
+                <img src="{{ asset('images/coming_soon.jpg') }}" class="card-img-top goods-image" onError="this.src='/images/coming_soon.jpg';" style="width: 100%;">
                 <div class="card-body">
                     <h5 class="card-title goods-title">Goods Name</h5>
                     <p class="card-text goods-price">$81,000</p>
