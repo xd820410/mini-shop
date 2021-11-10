@@ -7,6 +7,7 @@ use App\Services\GoodsService;
 use App\Services\ImageProccessingService;
 use App\Http\Requests\CreateGoods;
 use Illuminate\Http\Response;
+use Illuminate\Support\Arr;
 use Exception;
 
 class GoodsController extends Controller
@@ -45,13 +46,13 @@ class GoodsController extends Controller
     public function store(CreateGoods $request, GoodsService $goodsService, ImageProccessingService $imageProccessingService)
     {
         try {
-            if ($request->hasFile('image')) {
+            if ($request->hasFile('image') && !empty($request->file('image'))) {
                 //return $request->file('image');
                 $imagePath = $imageProccessingService->squareAndSave($request->file('image'));
                 $request->merge(['image_path' => $imagePath]);
             }
 
-            return $request->input();
+            //return $request->input();
             $result = $goodsService->create($request->input());
             $returnMessage = [
                 'result' => 'SUCCESS',
@@ -102,10 +103,16 @@ class GoodsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id, GoodsService $goodsService)
+    public function update(Request $request, $id, GoodsService $goodsService, ImageProccessingService $imageProccessingService)
     {
         try {
-            $result = $goodsService->updateById($id, $request->input());
+            if ($request->hasFile('image') && !empty($request->file('image'))) {
+                $imagePath = $imageProccessingService->squareAndSave($request->file('image'));
+                $request->merge(['image_path' => $imagePath]);
+            }
+
+            //return $request->input();
+            $result = $goodsService->updateById($id, Arr::except($request->input(), ['_method']));
             $returnMessage = [
                 'result' => 'SUCCESS',
                 'message' => $result,
