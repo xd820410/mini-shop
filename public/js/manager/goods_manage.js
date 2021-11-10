@@ -1,8 +1,30 @@
+var accessToken = null
+getAccessToken()
+
 jQuery(function() {
     wipe()
     jQuery("#create-goods").click(createGoods)
     showGoodsList()
 })
+
+function getAccessToken() {
+    jQuery.ajax({
+        url: baseUrl + '/manager/get_token',
+        type: 'GET',
+        processData: false,
+        contentType: false,
+    }).done(function(response, textStatus, jqXHR) {
+        message = '發生錯誤，請點擊F12並切換到Console頁籤，將內容截圖提供給開發廠商'
+        if (jqXHR.status == '200') {
+            //console.log('access token:', response)
+            accessToken = response.token
+        } else {
+            console.log('error on getAccessToken:', response)
+        }
+    }).fail(function(jqXHR, textStatus, errorThrown) {
+        console.log('fail to getAccessToken: ', jqXHR.responseText)
+    })
+}
 
 function wipe() {
     jQuery("#goods-list").empty()
@@ -53,7 +75,7 @@ function createGoods() {
         type: 'POST',
         data: formData,
         processData: false,
-        headers: {"Authorization": "Bearer 236|y1AoZjmfmpb9lrpNCmxYvuQsU7S74HYpyKNsqvgq"},
+        headers: {"Authorization": "Bearer " + accessToken},
         contentType: false,
     }).done(function(response, textStatus, jqXHR) {
         message = '發生錯誤，請點擊F12並切換到Console頁籤，將內容截圖提供給開發廠商'
@@ -148,7 +170,7 @@ function updateGoods(goodsId) {
         type: 'POST',
         data: formData,
         processData: false,
-        headers: {"Authorization": "Bearer 236|y1AoZjmfmpb9lrpNCmxYvuQsU7S74HYpyKNsqvgq"},
+        headers: {"Authorization": "Bearer " + accessToken},
         contentType: false,
     }).done(function(response, textStatus, jqXHR) {
         message = '發生錯誤，請點擊F12並切換到Console頁籤，將內容截圖提供給開發廠商'
@@ -205,7 +227,7 @@ function deleteGoods(goodsId) {
         url: baseUrl + '/api/goods/' + goodsId,
         type: 'DELETE',
         processData: false,
-        headers: {"Authorization": "Bearer 236|y1AoZjmfmpb9lrpNCmxYvuQsU7S74HYpyKNsqvgq"},
+        headers: {"Authorization": "Bearer " + accessToken},
         contentType: false,
     }).done(function(response, textStatus, jqXHR) {
         var message = '發生錯誤，請點擊F12並切換到Console頁籤，將內容截圖提供給開發廠商'
