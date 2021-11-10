@@ -160,13 +160,9 @@ function showMessage(message, status = 'success') {
 }
 
 function deleteGoods(goodsId) {
-    //console.log('goodsId', goodsId)
-    var formData = new FormData()
-
     jQuery.ajax({
         url: baseUrl + '/api/goods/' + goodsId,
         type: 'DELETE',
-        data: formData,
         processData: false,
         headers: {"Authorization": "Bearer 236|y1AoZjmfmpb9lrpNCmxYvuQsU7S74HYpyKNsqvgq"},
         contentType: false,
