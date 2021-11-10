@@ -47,7 +47,7 @@
                                 </div>
                                 <div class="input-group">
                                     <span class="input-group-text">Price: </span>
-                                    <input type="text" class="form-control price" placeholder="777">
+                                    <input type="text" class="form-control price" placeholder="777" onkeyup="value=value.replace(/[^\d]/g,'') ">
                                     <button class="btn btn-outline-primary update" type="button">Update</button>
                                     <button class="btn btn-outline-primary delete" type="button">Delete</button>
                                 </div>
@@ -80,7 +80,7 @@
                         </div>
                         <div class="input-group">
                             <span class="input-group-text">Price: </span>
-                            <input type="text" class="form-control" id="new-price" placeholder="777">
+                            <input type="text" class="form-control" id="new-price" placeholder="777" onkeyup="value=value.replace(/[^\d]/g,'') ">
                             <button class="btn btn-outline-primary" id="create-goods" type="button">Create</button>
                         </div>
                     </div>
