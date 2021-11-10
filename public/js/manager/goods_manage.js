@@ -1,5 +1,6 @@
 jQuery(function() {
     wipe()
+    jQuery("#create-goods").click(createGoods)
     showGoodsList()
 })
 
@@ -9,9 +10,50 @@ function wipe() {
     jQuery("#alert-block").hide()
 }
 
+function createGoods() {
+    var formData = new FormData()
+    formData.append('title', jQuery("#new-name").val())
+    formData.append('description', jQuery("#new-description").val())
+    formData.append('price', jQuery("#new-price").val())
+    if (typeof jQuery("#new-image")[0].files[0] !== 'undefined') {
+        formData.append('image', jQuery("#new-image")[0].files[0])
+    }
+
+    jQuery.ajax({
+        url: baseUrl + '/api/goods',
+        type: 'POST',
+        data: formData,
+        processData: false,
+        headers: {"Authorization": "Bearer 236|y1AoZjmfmpb9lrpNCmxYvuQsU7S74HYpyKNsqvgq"},
+        contentType: false,
+    }).done(function(response, textStatus, jqXHR) {
+        var message = '發生錯誤，請點擊F12並切換到Console頁籤，將內容截圖提供給開發廠商'
+        var status = 'fail'
+
+        if (jqXHR.status == '204') {
+            message = 'Updated successfully.'
+            status = 'success'
+        }
+        if (jqXHR.status == '201') {
+            message = 'Created successfully.'
+            status = 'success'
+        }
+
+        wipe()
+        showGoodsList()
+        showMessage(message, status)
+
+        if (jqXHR.status != '204' && jqXHR.status != '201') {
+            console.log('error on createGoods:', response)
+        }
+    }).fail(function() {
+        console.log('fail to createGoods')
+    })
+}
+
 async function showGoodsList() {
     var response = await getGoodsList()
-    console.log(response)
+    //console.log(response)
     if (typeof response == 'object' && response.result == 'SUCCESS' && response.message.length > 0) {
         await response.message.forEach(function(goods) {
             jQuery("#goods-card-sample").clone().appendTo(jQuery("#goods-list"))
@@ -64,7 +106,7 @@ function updateGoods(goodsId) {
 
     jQuery.ajax({
         url: baseUrl + '/api/goods/' + goodsId,
-        type: 'post',
+        type: 'POST',
         data: formData,
         processData: false,
         headers: {"Authorization": "Bearer 236|y1AoZjmfmpb9lrpNCmxYvuQsU7S74HYpyKNsqvgq"},
