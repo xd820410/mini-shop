@@ -16,6 +16,13 @@
         </ul>
     </div>
     <div class="col-8">
+        <div class="row">
+            <div class="col-12">
+                <div class="alert" role="alert" id="alert-block" style="display: none;">
+                </div>
+            </div>
+        </div>
+
         <!-- goods card sample -->
         <div class="row mb-3">
             <div class="col-12 mb-3 goods-card-sample" id="goods-card-sample" style="display: none;">
