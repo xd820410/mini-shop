@@ -29,11 +29,6 @@ function createGoods() {
     }).done(function(response, textStatus, jqXHR) {
         var message = '發生錯誤，請點擊F12並切換到Console頁籤，將內容截圖提供給開發廠商'
         var status = 'fail'
-
-        if (jqXHR.status == '204') {
-            message = 'Updated successfully.'
-            status = 'success'
-        }
         if (jqXHR.status == '201') {
             message = 'Created successfully.'
             status = 'success'
@@ -43,7 +38,7 @@ function createGoods() {
         showGoodsList()
         showMessage(message, status)
 
-        if (jqXHR.status != '204' && jqXHR.status != '201') {
+        if (jqXHR.status != '201') {
             console.log('error on createGoods:', response)
         }
     }).fail(function() {
@@ -84,6 +79,10 @@ async function showGoodsList() {
         jQuery(".update").unbind().click(function() {
             updateGoods(jQuery(this).data('goods-id'))
         })
+
+        jQuery(".delete").unbind().click(function() {
+            deleteGoods(jQuery(this).data('goods-id'))
+        })
     }
 }
 
@@ -114,13 +113,8 @@ function updateGoods(goodsId) {
     }).done(function(response, textStatus, jqXHR) {
         var message = '發生錯誤，請點擊F12並切換到Console頁籤，將內容截圖提供給開發廠商'
         var status = 'fail'
-
         if (jqXHR.status == '204') {
             message = 'Updated successfully.'
-            status = 'success'
-        }
-        if (jqXHR.status == '201') {
-            message = 'Created successfully.'
             status = 'success'
         }
 
@@ -128,7 +122,7 @@ function updateGoods(goodsId) {
         showGoodsList()
         showMessage(message, status)
 
-        if (jqXHR.status != '204' && jqXHR.status != '201') {
+        if (jqXHR.status != '204') {
             console.log('error on updateGoods:', response)
         }
     }).fail(function() {
@@ -163,4 +157,35 @@ function showMessage(message, status = 'success') {
     jQuery("html, body").animate({
         scrollTop: 0,
     }, 200)
+}
+
+function deleteGoods(goodsId) {
+    //console.log('goodsId', goodsId)
+    var formData = new FormData()
+
+    jQuery.ajax({
+        url: baseUrl + '/api/goods/' + goodsId,
+        type: 'DELETE',
+        data: formData,
+        processData: false,
+        headers: {"Authorization": "Bearer 236|y1AoZjmfmpb9lrpNCmxYvuQsU7S74HYpyKNsqvgq"},
+        contentType: false,
+    }).done(function(response, textStatus, jqXHR) {
+        var message = '發生錯誤，請點擊F12並切換到Console頁籤，將內容截圖提供給開發廠商'
+        var status = 'fail'
+        if (jqXHR.status == '204') {
+            message = 'Deleted successfully.'
+            status = 'success'
+        }
+
+        wipe()
+        showGoodsList()
+        showMessage(message, status)
+
+        if (jqXHR.status != '204') {
+            console.log('error on deleteGoods:', response)
+        }
+    }).fail(function() {
+        console.log('fail to deleteGoods')
+    })
 }
