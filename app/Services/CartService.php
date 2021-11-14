@@ -8,6 +8,7 @@ class CartService
 {
     public function addItemToCart($data)
     {
+        $data['quantity'] = (int) $data['quantity'];
         session()->put('cart.' . 'goods_' . $data['goods_id'], $data);
         
         return session()->get('cart');
