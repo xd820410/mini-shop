@@ -3,9 +3,40 @@
 namespace App\Services;
 
 use Exception;
+use App\Repositories\CartRepository;
 
 class CartService
 {
+    public function mergeSessionCart($userId, $sessionCart, CartRepository $cartRepository)
+    {
+        $userCart = $cartRepository->getByUserId($userId);
+        
+        if (empty($userCart)) {
+            return $cartRepository->create([
+                'user_id' => $userId,
+                'payload' => $sessionCart
+            ]);
+        }
+
+        $mergedCart = array_merge($userCart['payload'], $sessionCart);
+        foreach($userCart['payload'] as $userCartItemKey => $userCartItem) {
+            foreach($sessionCart as $sessionCartItemKey => $sessionCartItem) {
+                if ($userCartItemKey === $sessionCartItemKey) {
+                    $quantity = $userCartItem['quantity'] + $sessionCartItem['quantity'];
+                    $mergedCart[$userCartItemKey]['quantity'] = $quantity;
+                }
+            }
+        }
+        
+        return $cartRepository->updateById(
+            $userCart['id'],
+            [
+                'user_id' => $userId,
+                'payload' => $mergedCart
+            ]
+        );
+    }
+
     public function addItemToCart($data)
     {
         $data['quantity'] = (int) $data['quantity'];
