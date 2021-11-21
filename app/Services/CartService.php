@@ -7,6 +7,16 @@ use App\Repositories\CartRepository;
 
 class CartService
 {
+    public function checkUserCartExisting($userId, CartRepository $cartRepository)
+    {
+        $userCart = $cartRepository->getByUserId($userId);
+
+        if (empty($userCart)) {
+            return false;
+        }
+        return true;
+    }
+
     public function mergeSessionCart($userId, $sessionCart, CartRepository $cartRepository)
     {
         $userCart = $cartRepository->getByUserId($userId);
@@ -37,7 +47,7 @@ class CartService
         );
     }
 
-    public function addItemToCart($data)
+    public function addItemToSessionCart($data)
     {
         $data['quantity'] = (int) $data['quantity'];
         session()->put('cart.' . 'goods_' . $data['goods_id'], $data);
@@ -45,16 +55,16 @@ class CartService
         return session()->get('cart');
     }
 
-    public function checkItemInCart($data)
+    public function checkItemInSessionCart($goodsId)
     {
-        if (session()->has('cart.' . 'goods_' . $data['goods_id'])) {
+        if (session()->has('cart.' . 'goods_' . $goodsId)) {
             return true;
         }
 
         return false;
     }
 
-    public function updateItemInCart($data)
+    public function updateItemInSessionCart($data)
     {
         $quantityNow = session()->get('cart.' . 'goods_' . $data['goods_id'] . '.quantity');
         session()->put('cart.' . 'goods_' . $data['goods_id'] . '.quantity', $quantityNow + $data['quantity']);

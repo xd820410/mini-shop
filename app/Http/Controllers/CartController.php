@@ -9,6 +9,8 @@ use App\Services\GoodsService;
 use Exception;
 use Illuminate\Support\Arr;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\App;
 
 class CartController extends Controller
 {
@@ -17,15 +19,44 @@ class CartController extends Controller
         return User::with('permissions')->get();
     }
 
-    public function addItemToCart(AddToCart $request, CartService $cartService)
+    public function addItemToUserCart(AddToCart $request)
     {
         try {
-            $checkItemInCart = $cartService->checkItemInCart(Arr::except($request->input(), ['_token']));
+            $userCartExisting = App::call([new CartService, 'checkUserCartExisting'], ['userId' => Auth::user()->id]);
+
+            if ($userCartExisting === true) {
+                return 'update';
+                //$result = $cartService->updateItemInUserCart(Arr::except($request->input(), ['_token']));
+            } else {
+                return 'create';
+                //$result = $cartService->addItemToUserCart(Arr::except($request->input(), ['_token']));
+            }
+
+            // $returnMessage = [
+            //     'result' => 'SUCCESS',
+            //     'content' => $result,
+            // ];
+
+            // return response()->json($returnMessage, Response::HTTP_CREATED);
+        } catch (Exception $e) {
+            $errorMessage = [
+                'result' => 'ERROR',
+                'message' => $e->getMessage(),
+            ];
+
+            return response()->json($errorMessage, Response::HTTP_NOT_FOUND);
+        }
+    }
+
+    public function addItemToSessionCart(AddToCart $request, CartService $cartService)
+    {
+        try {
+            $checkItemInCart = $cartService->checkItemInSessionCart($request->input('goods_id'));
 
             if ($checkItemInCart === true) {
-                $result = $cartService->updateItemInCart(Arr::except($request->input(), ['_token']));
+                $result = $cartService->updateItemInSessionCart(Arr::except($request->input(), ['_token']));
             } else {
-                $result = $cartService->addItemToCart(Arr::except($request->input(), ['_token']));
+                $result = $cartService->addItemToSessionCart(Arr::except($request->input(), ['_token']));
             }
 
             $returnMessage = [
