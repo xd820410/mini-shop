@@ -64,5 +64,6 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'manager' => \App\Http\Middleware\Manager::class,
         'sanctum.can_edit' => \App\Http\Middleware\SanctumCanEdit::class,
+        'merge_session_cart' => \App\Http\Middleware\MergeSessionCart::class,
     ];
 }

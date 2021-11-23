@@ -1,6 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\CartController;
+use App\Http\Requests\AddToCart;
+use Illuminate\Support\Facades\App;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,11 +26,40 @@ Route::get('/', function () {
 Route::get('/home', 'HomeController@index')->name('home');
 
 //管理員可看
-Route::group(['prefix' => 'manager',  'middleware' => 'manager'], function () {
+Route::group(['prefix' => 'manager', 'middleware' => ['manager', 'merge_session_cart']], function () {
     Route::get('/get_token', 'ManagerController@getToken');
     Route::get('/goods', 'ManagerController@showGoodsManager');
 });
 
-Route::post('/cart', 'CartController@addItemToCart');
+/**
+ * 加入購物車
+ * 註解為各式失敗方案
+ */
+//方案1. switcher => 在switcher就要注入用不到的service，那method injection是白做==
+//Route::post('/cart', 'CartController@addItemToCartSwitcher');
 
-Route::get('/orm-test', 'CartController@test');
+//方案2. 應該是closure之外，還沒被middleware濾過，Auth不生效
+// $addItemToCartMethod = 'addItemToSessionCart';
+// if (Auth::check()) {
+//     $addItemToCartMethod = 'addItemToUserCart';
+// }
+// Route::post('/cart', function () use ($addItemToCartMethod) {
+//     return $addItemToCartMethod;
+// });
+//方案2之衍生測試，closure內可正常判斷登出登入
+// Route::post('/cart', function () {
+//     return Auth::check();
+// });
+
+//方案3. 理由應該同方案2
+//Route::post('/cart', (Auth::check() == true) ? 'CartController@addItemToUserCart' : 'CartController@addItemToSessionCart');
+
+//最終方案
+Route::post('/cart', function () {
+    $addItemToCartMethod = 'addItemToSessionCart';
+    if (Auth::check()) {
+        $addItemToCartMethod = 'addItemToUserCart';
+    }
+
+    return App::call([new CartController, $addItemToCartMethod]);
+});

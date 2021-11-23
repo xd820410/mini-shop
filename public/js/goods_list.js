@@ -13,7 +13,9 @@ async function showGoodsList() {
             jQuery(".goods-card-sample").last().attr('id', 'goods-' + goods.id)
             jQuery("#goods-" + goods.id + " .goods-title").text(goods.title)
             jQuery("#goods-" + goods.id + " .goods-price").text('$' + toCurrency(goods.price))
-            jQuery("#goods-" + goods.id + " .goods-image").attr('src', baseUrl + goods.image_path)
+            if (goods.image_path != null && goods.image_path != '') {
+                jQuery("#goods-" + goods.id + " .goods-image").attr('src', baseUrl + goods.image_path)
+            }
             jQuery("#goods-" + goods.id + " .add-to-cart").data('goods-id', goods.id)
             jQuery("#goods-" + goods.id).show()
         })
