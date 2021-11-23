@@ -63,5 +63,3 @@ Route::post('/cart', function () {
 
     return App::call([new CartController, $addItemToCartMethod]);
 });
-
-Route::get('/orm-test', 'CartController@test');

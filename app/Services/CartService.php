@@ -7,6 +7,47 @@ use App\Repositories\CartRepository;
 
 class CartService
 {
+    public function updateUserCart($userId, $cartItemData, CartRepository $cartRepository)
+    {
+        $userCart = $cartRepository->getByUserId($userId);
+        if (empty($userCart)) {
+            throw new Exception('User does not exist.');
+        }
+
+        $payload = $userCart['payload'];
+        if (isset($userCart['payload']['goods_' . $cartItemData['goods_id']]) && !empty($userCart['payload']['goods_' . $cartItemData['goods_id']])) {
+            $payload['goods_' . $cartItemData['goods_id']]['quantity'] += $cartItemData['quantity'];
+        } else {
+            $cartItemData['quantity'] = (int) $cartItemData['quantity'];
+            $payload['goods_' . $cartItemData['goods_id']] = $cartItemData;
+        }
+
+        $data = [];
+        $data['payload'] = $payload;
+        $result = $cartRepository->updateById($userCart['id'], $data);
+        if (empty($result)) {
+            throw new Exception('Fail to update.');
+        }
+
+        return $result;
+    }
+
+    public function createUserCart($userId, $cartItemData, CartRepository $cartRepository)
+    {
+        $data = [];
+        $data['user_id'] = $userId;
+        $data['payload'] = [];
+        $data['payload']['goods_' . $cartItemData['goods_id']] = [];
+        $data['payload']['goods_' . $cartItemData['goods_id']] = $cartItemData;
+
+        $result = $cartRepository->create($data);
+        if (empty($result)) {
+            throw new Exception('Fail to create.');
+        }
+
+        return $result;
+    }
+
     public function checkUserCartExisting($userId, CartRepository $cartRepository)
     {
         $userCart = $cartRepository->getByUserId($userId);

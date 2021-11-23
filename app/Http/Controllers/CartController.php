@@ -8,36 +8,37 @@ use App\Services\CartService;
 use App\Services\GoodsService;
 use Exception;
 use Illuminate\Support\Arr;
-use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\App;
 
 class CartController extends Controller
 {
-    public function test()
-    {
-        return User::with('permissions')->get();
-    }
-
     public function addItemToUserCart(AddToCart $request)
     {
         try {
             $userCartExisting = App::call([new CartService, 'checkUserCartExisting'], ['userId' => Auth::user()->id]);
 
             if ($userCartExisting === true) {
-                return 'update';
-                //$result = $cartService->updateItemInUserCart(Arr::except($request->input(), ['_token']));
+                $result = App::call([new CartService, 'updateUserCart'], [
+                    'userId' => Auth::user()->id,
+                    'cartItemData' => Arr::except($request->input(), ['_token'])
+                ]);
+                //$httpStatusCode = Response::HTTP_CREATED;
+                $httpStatusCode = Response::HTTP_NO_CONTENT;
             } else {
-                return 'create';
-                //$result = $cartService->addItemToUserCart(Arr::except($request->input(), ['_token']));
+                $result = App::call([new CartService, 'createUserCart'], [
+                    'userId' => Auth::user()->id,
+                    'cartItemData' => Arr::except($request->input(), ['_token'])
+                ]);
+                $httpStatusCode = Response::HTTP_CREATED;
             }
 
-            // $returnMessage = [
-            //     'result' => 'SUCCESS',
-            //     'content' => $result,
-            // ];
+            $returnMessage = [
+                'result' => 'SUCCESS',
+                'content' => $result,
+            ];
 
-            // return response()->json($returnMessage, Response::HTTP_CREATED);
+            return response()->json($returnMessage, $httpStatusCode);
         } catch (Exception $e) {
             $errorMessage = [
                 'result' => 'ERROR',
