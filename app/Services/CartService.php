@@ -19,7 +19,7 @@ class CartService
             $payload['goods_' . $cartItemData['goods_id']]['quantity'] += $cartItemData['quantity'];
         } else {
             $cartItemData['quantity'] = (int) $cartItemData['quantity'];
-            $payload['goods_' . $cartItemData['goods_id']] = $cartItemData;
+            $payload['goods_' . $cartItemData['goods_id']] = (int) $cartItemData;
         }
 
         $data = [];
