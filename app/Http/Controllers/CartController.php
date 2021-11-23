@@ -23,14 +23,11 @@ class CartController extends Controller
                     'userId' => Auth::user()->id,
                     'cartItemData' => Arr::except($request->input(), ['_token'])
                 ]);
-                //$httpStatusCode = Response::HTTP_CREATED;
-                $httpStatusCode = Response::HTTP_NO_CONTENT;
             } else {
                 $result = App::call([new CartService, 'createUserCart'], [
                     'userId' => Auth::user()->id,
                     'cartItemData' => Arr::except($request->input(), ['_token'])
                 ]);
-                $httpStatusCode = Response::HTTP_CREATED;
             }
 
             $returnMessage = [
@@ -38,7 +35,8 @@ class CartController extends Controller
                 'content' => $result,
             ];
 
-            return response()->json($returnMessage, $httpStatusCode);
+            //這本就不是restful api，200方便一點
+            return response()->json($returnMessage, Response::HTTP_OK);
         } catch (Exception $e) {
             $errorMessage = [
                 'result' => 'ERROR',
