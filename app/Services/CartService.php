@@ -8,6 +8,37 @@ use App\Repositories\GoodsRepository;
 
 class CartService
 {
+    public function deleteItemFromUserCart($userId, $goodsId, CartRepository $cartRepository)
+    {
+        $userCart = $cartRepository->getByUserId($userId);
+        if (empty($userCart)) {
+            throw new Exception('User does not exist.');
+        }
+
+        $payload = $userCart['payload'];
+        if (isset($payload['goods_' . $goodsId])) {
+            unset($payload['goods_' . $goodsId]);
+        }
+
+        $data = [];
+        $data['payload'] = $payload;
+        $result = $cartRepository->updateById($userCart['id'], $data);
+        if (empty($result)) {
+            throw new Exception('Fail to update.');
+        }
+
+        return $result;
+    }
+
+    public function deleteItemFromSessionCart($goodsId)
+    {
+        if (session()->has('cart.' . 'goods_' . $goodsId)) {
+            session()->forget('cart.' . 'goods_' . $goodsId);
+        }
+
+        return session()->get('cart');
+    }
+
     public function fillItemDataInCart(Array $cart, GoodsRepository $goodsRepository)
     {
         /**

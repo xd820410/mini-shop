@@ -71,3 +71,12 @@ Route::get('/cart', function () {
 
     return App::call([new CartController, $getCartMethod]);
 });
+
+Route::post('/delete_item_from_cart', function () {
+    $deleteItemFromCartMethod = 'deleteItemFromSessionCart';
+    if (Auth::check()) {
+        $deleteItemFromCartMethod = 'deleteItemFromUserCart';
+    }
+
+    return App::call([new CartController, $deleteItemFromCartMethod]);
+});

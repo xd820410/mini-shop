@@ -36,10 +36,29 @@ async function refreshMiniCartContent() {
 
         jQuery("#cart-total").text('$' + toCurrency(total))
         jQuery("#cart-total-block").show()
-        //bindDeleteItemFromCartEvent()
+
+        bindDeleteItemFromCartEvent()
     } else {
         jQuery("#cart-item-list").append('<p><small>Let\'s get something awesome!</small></p>')
     }
+}
+
+function bindDeleteItemFromCartEvent() {
+    jQuery(".delete-cart-item").unbind().click(function() {
+        console.log('goods-id to delete from cart', jQuery(this).data('goods-id'))
+
+        var sendData = new Object()
+        sendData.goods_id = jQuery(this).data('goods-id')
+        sendData._token = document.head.querySelector('meta[name="csrf-token"]').content
+
+        jQuery.post(baseUrl + '/delete_item_from_cart', sendData)
+        .done(function(response) {
+            console.log('DeleteItemFromCart response', response)
+            refreshMiniCartContent()
+        }).fail(function() {
+            console.log('fail to DeleteItemFromCart')
+        })
+    })
 }
 
 function cartHoverEvent() {

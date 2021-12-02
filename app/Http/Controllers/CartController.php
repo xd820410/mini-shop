@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Requests\AddToCart;
 use App\Services\CartService;
@@ -12,6 +13,46 @@ use Illuminate\Support\Facades\App;
 
 class CartController extends Controller
 {
+    public function deleteItemFromUserCart(Request $request)
+    {
+        try {
+            $result = App::call([new CartService, 'deleteItemFromUserCart'], ['userId' => Auth::user()->id, 'goodsId' => $request->input()['goods_id']]);
+            $returnMessage = [
+                'result' => 'SUCCESS',
+                'message' => $result,
+            ];
+
+            return response()->json($returnMessage, Response::HTTP_NO_CONTENT);
+        } catch (Exception $e) {
+            $errorMessage = [
+                'result' => 'ERROR',
+                'message' => $e->getMessage(),
+            ];
+
+            return response()->json($errorMessage, Response::HTTP_NOT_FOUND);
+        }
+    }
+
+    public function deleteItemFromSessionCart(Request $request, CartService $cartService)
+    {
+        try {
+            $result = $cartService->deleteItemFromSessionCart($request->input()['goods_id']);
+            $returnMessage = [
+                'result' => 'SUCCESS',
+                'message' => $result,
+            ];
+
+            return response()->json($returnMessage, Response::HTTP_NO_CONTENT);
+        } catch (Exception $e) {
+            $errorMessage = [
+                'result' => 'ERROR',
+                'message' => $e->getMessage(),
+            ];
+
+            return response()->json($errorMessage, Response::HTTP_NOT_FOUND);
+        }
+    }
+
     public function getUserCart()
     {
         try {
