@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Response;
 use App\Http\Requests\AddToCart;
 use App\Services\CartService;
-use App\Services\GoodsService;
 use Exception;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
@@ -13,6 +12,54 @@ use Illuminate\Support\Facades\App;
 
 class CartController extends Controller
 {
+    public function getUserCart()
+    {
+        try {
+            $cart = App::call([new CartService, 'getUserCart'], ['userId' => Auth::user()->id]);
+            if (!empty($cart)) {
+                $cart = App::call([new CartService, 'fillItemDataInCart'], ['cart' => $cart]);
+            }
+
+            $returnMessage = [
+                'result' => 'SUCCESS',
+                'content' => $cart,
+            ];
+
+            return response()->json($returnMessage, Response::HTTP_OK);
+        } catch (Exception $e) {
+            $errorMessage = [
+                'result' => 'ERROR',
+                'message' => $e->getMessage(),
+            ];
+
+            return response()->json($errorMessage, Response::HTTP_NOT_FOUND);
+        }
+    }
+
+    public function getSessionCart(CartService $cartService)
+    {
+        try {
+            $cart = $cartService->getSessionCart();
+            if (!empty($cart)) {
+                $cart = App::call([new CartService, 'fillItemDataInCart'], ['cart' => $cart]);
+            }
+
+            $returnMessage = [
+                'result' => 'SUCCESS',
+                'content' => $cart,
+            ];
+
+            return response()->json($returnMessage, Response::HTTP_OK);
+        } catch (Exception $e) {
+            $errorMessage = [
+                'result' => 'ERROR',
+                'message' => $e->getMessage(),
+            ];
+
+            return response()->json($errorMessage, Response::HTTP_NOT_FOUND);
+        }
+    }
+
     public function addItemToUserCart(AddToCart $request)
     {
         try {

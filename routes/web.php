@@ -3,7 +3,6 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\CartController;
-use App\Http\Requests\AddToCart;
 use Illuminate\Support\Facades\App;
 
 /*
@@ -38,7 +37,7 @@ Route::group(['prefix' => 'manager', 'middleware' => ['manager', 'merge_session_
 //方案1. switcher => 在switcher就要注入用不到的service，那method injection是白做==
 //Route::post('/cart', 'CartController@addItemToCartSwitcher');
 
-//方案2. 應該是closure之外，還沒被middleware濾過，Auth不生效
+//方案2. 應該是closure之外Auth facade還不生效
 // $addItemToCartMethod = 'addItemToSessionCart';
 // if (Auth::check()) {
 //     $addItemToCartMethod = 'addItemToUserCart';
@@ -51,7 +50,7 @@ Route::group(['prefix' => 'manager', 'middleware' => ['manager', 'merge_session_
 //     return Auth::check();
 // });
 
-//方案3. 理由應該同方案2
+//方案3. 失敗原因應該同方案2
 //Route::post('/cart', (Auth::check() == true) ? 'CartController@addItemToUserCart' : 'CartController@addItemToSessionCart');
 
 //最終方案
@@ -62,4 +61,13 @@ Route::post('/cart', function () {
     }
 
     return App::call([new CartController, $addItemToCartMethod]);
+});
+
+Route::get('/cart', function () {
+    $getCartMethod = 'getSessionCart';
+    if (Auth::check()) {
+        $getCartMethod = 'getUserCart';
+    }
+
+    return App::call([new CartController, $getCartMethod]);
 });

@@ -37,4 +37,9 @@ class GoodsRepository
     {
         return $this->model->where('id', $id)->delete();
     }
+
+    public function getByIds(Array $ids)
+    {
+        return $this->model->whereIn('id', $ids)->get();
+    }
 }
