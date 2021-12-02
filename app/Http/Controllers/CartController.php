@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Requests\AddToCart;
 use App\Services\CartService;
-use App\Services\GoodsService;
 use Exception;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
@@ -13,6 +13,94 @@ use Illuminate\Support\Facades\App;
 
 class CartController extends Controller
 {
+    public function deleteItemFromUserCart(Request $request)
+    {
+        try {
+            $result = App::call([new CartService, 'deleteItemFromUserCart'], ['userId' => Auth::user()->id, 'goodsId' => $request->input()['goods_id']]);
+            $returnMessage = [
+                'result' => 'SUCCESS',
+                'message' => $result,
+            ];
+
+            return response()->json($returnMessage, Response::HTTP_NO_CONTENT);
+        } catch (Exception $e) {
+            $errorMessage = [
+                'result' => 'ERROR',
+                'message' => $e->getMessage(),
+            ];
+
+            return response()->json($errorMessage, Response::HTTP_NOT_FOUND);
+        }
+    }
+
+    public function deleteItemFromSessionCart(Request $request, CartService $cartService)
+    {
+        try {
+            $result = $cartService->deleteItemFromSessionCart($request->input()['goods_id']);
+            $returnMessage = [
+                'result' => 'SUCCESS',
+                'message' => $result,
+            ];
+
+            return response()->json($returnMessage, Response::HTTP_NO_CONTENT);
+        } catch (Exception $e) {
+            $errorMessage = [
+                'result' => 'ERROR',
+                'message' => $e->getMessage(),
+            ];
+
+            return response()->json($errorMessage, Response::HTTP_NOT_FOUND);
+        }
+    }
+
+    public function getUserCart()
+    {
+        try {
+            $cart = App::call([new CartService, 'getUserCart'], ['userId' => Auth::user()->id]);
+            if (!empty($cart)) {
+                $cart = App::call([new CartService, 'fillItemDataInCart'], ['cart' => $cart]);
+            }
+
+            $returnMessage = [
+                'result' => 'SUCCESS',
+                'content' => $cart,
+            ];
+
+            return response()->json($returnMessage, Response::HTTP_OK);
+        } catch (Exception $e) {
+            $errorMessage = [
+                'result' => 'ERROR',
+                'message' => $e->getMessage(),
+            ];
+
+            return response()->json($errorMessage, Response::HTTP_NOT_FOUND);
+        }
+    }
+
+    public function getSessionCart(CartService $cartService)
+    {
+        try {
+            $cart = $cartService->getSessionCart();
+            if (!empty($cart)) {
+                $cart = App::call([new CartService, 'fillItemDataInCart'], ['cart' => $cart]);
+            }
+
+            $returnMessage = [
+                'result' => 'SUCCESS',
+                'content' => $cart,
+            ];
+
+            return response()->json($returnMessage, Response::HTTP_OK);
+        } catch (Exception $e) {
+            $errorMessage = [
+                'result' => 'ERROR',
+                'message' => $e->getMessage(),
+            ];
+
+            return response()->json($errorMessage, Response::HTTP_NOT_FOUND);
+        }
+    }
+
     public function addItemToUserCart(AddToCart $request)
     {
         try {
@@ -23,14 +111,11 @@ class CartController extends Controller
                     'userId' => Auth::user()->id,
                     'cartItemData' => Arr::except($request->input(), ['_token'])
                 ]);
-                //$httpStatusCode = Response::HTTP_CREATED;
-                $httpStatusCode = Response::HTTP_NO_CONTENT;
             } else {
                 $result = App::call([new CartService, 'createUserCart'], [
                     'userId' => Auth::user()->id,
                     'cartItemData' => Arr::except($request->input(), ['_token'])
                 ]);
-                $httpStatusCode = Response::HTTP_CREATED;
             }
 
             $returnMessage = [
@@ -38,7 +123,8 @@ class CartController extends Controller
                 'content' => $result,
             ];
 
-            return response()->json($returnMessage, $httpStatusCode);
+            //這本就不是restful api，200方便一點
+            return response()->json($returnMessage, Response::HTTP_OK);
         } catch (Exception $e) {
             $errorMessage = [
                 'result' => 'ERROR',

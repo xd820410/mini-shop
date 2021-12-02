@@ -4,9 +4,84 @@ namespace App\Services;
 
 use Exception;
 use App\Repositories\CartRepository;
+use App\Repositories\GoodsRepository;
 
 class CartService
 {
+    public function deleteItemFromUserCart($userId, $goodsId, CartRepository $cartRepository)
+    {
+        $userCart = $cartRepository->getByUserId($userId);
+        if (empty($userCart)) {
+            throw new Exception('User does not exist.');
+        }
+
+        $payload = $userCart['payload'];
+        if (isset($payload['goods_' . $goodsId])) {
+            unset($payload['goods_' . $goodsId]);
+        }
+
+        $data = [];
+        $data['payload'] = $payload;
+        $result = $cartRepository->updateById($userCart['id'], $data);
+        if (empty($result)) {
+            throw new Exception('Fail to update.');
+        }
+
+        return $result;
+    }
+
+    public function deleteItemFromSessionCart($goodsId)
+    {
+        if (session()->has('cart.' . 'goods_' . $goodsId)) {
+            session()->forget('cart.' . 'goods_' . $goodsId);
+        }
+
+        return session()->get('cart');
+    }
+
+    public function fillItemDataInCart(Array $cart, GoodsRepository $goodsRepository)
+    {
+        /**
+         * Prevent N+1 problem
+         */
+        $cartItemIdList = [];
+        foreach ($cart as $itemKey => $item) {
+            $cartItemIdList[] = $item['goods_id'];
+        }
+
+        $existingGoods = $goodsRepository->getByIds($cartItemIdList)->toArray();
+        $goods = [];
+        foreach ($existingGoods as $eachGoods) {
+            $goods['goods_' . $eachGoods['id']] = $eachGoods;
+        }
+
+        $cartAfterFillingItemData = [];
+        foreach ($cart as $itemKey => $item) {
+            $thisItem = [];
+            if (isset($goods[$itemKey]) && !empty($goods[$itemKey])) {
+                $thisItem = array_merge($cart[$itemKey], $goods[$itemKey]);
+                unset($thisItem['id']);
+                unset($thisItem['created_at']);
+                unset($thisItem['updated_at']);
+                $cartAfterFillingItemData[$itemKey] = $thisItem;
+            }
+        }
+
+        return $cartAfterFillingItemData;
+    }
+
+    public function getUserCart($userId, CartRepository $cartRepository)
+    {
+        $userCart = $cartRepository->getByUserId($userId);
+
+        return $userCart['payload'];
+    }
+
+    public function getSessionCart()
+    {
+        return session()->get('cart');
+    }
+
     public function updateUserCart($userId, $cartItemData, CartRepository $cartRepository)
     {
         $userCart = $cartRepository->getByUserId($userId);
@@ -19,7 +94,7 @@ class CartService
             $payload['goods_' . $cartItemData['goods_id']]['quantity'] += $cartItemData['quantity'];
         } else {
             $cartItemData['quantity'] = (int) $cartItemData['quantity'];
-            $payload['goods_' . $cartItemData['goods_id']] = (int) $cartItemData;
+            $payload['goods_' . $cartItemData['goods_id']] = $cartItemData;
         }
 
         $data = [];
