@@ -32,13 +32,13 @@ function bindAddToCartEvent() {
         sendData.goods_id = jQuery(this).data('goods-id')
         sendData.quantity = 1
         sendData._token = document.head.querySelector('meta[name="csrf-token"]').content
-        /**
-         * @todo 'html csrf meta' to real meta
-         */
 
         jQuery.post(baseUrl + '/cart', sendData)
         .done(function(response) {
             console.log('AddToCart response', response)
+            refreshMiniCartContent()
+            miniCartHoverTimer = null
+            miniCart.show()
         }).fail(function() {
             console.log('fail to AddToCart')
         })
