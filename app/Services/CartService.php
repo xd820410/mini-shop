@@ -8,6 +8,7 @@ use App\Repositories\GoodsRepository;
 
 class CartService
 {
+
     public function deleteItemFromUserCart($userId, $goodsId, CartRepository $cartRepository)
     {
         $userCart = $cartRepository->getByUserId($userId);
@@ -90,12 +91,7 @@ class CartService
         }
 
         $payload = $userCart['payload'];
-        if (isset($userCart['payload']['goods_' . $cartItemData['goods_id']]) && !empty($userCart['payload']['goods_' . $cartItemData['goods_id']])) {
-            $payload['goods_' . $cartItemData['goods_id']]['quantity'] += $cartItemData['quantity'];
-        } else {
-            $cartItemData['quantity'] = (int) $cartItemData['quantity'];
-            $payload['goods_' . $cartItemData['goods_id']] = $cartItemData;
-        }
+        $payload['goods_' . $cartItemData['goods_id']] = $cartItemData;
 
         $data = [];
         $data['payload'] = $payload;
@@ -182,8 +178,7 @@ class CartService
 
     public function updateItemInSessionCart($data)
     {
-        $quantityNow = session()->get('cart.' . 'goods_' . $data['goods_id'] . '.quantity');
-        session()->put('cart.' . 'goods_' . $data['goods_id'] . '.quantity', $quantityNow + $data['quantity']);
+        session()->put('cart.' . 'goods_' . $data['goods_id'] . '.quantity', $data['quantity']);
 
         return session()->get('cart');
     }
