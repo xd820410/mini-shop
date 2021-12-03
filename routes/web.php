@@ -80,3 +80,12 @@ Route::post('/delete_item_from_cart', function () {
 
     return App::call([new CartController, $deleteItemFromCartMethod]);
 });
+
+Route::post('/edit_item_quantity_from_cart', function () {
+    $editItemQuantityFromCartMethod = 'EditItemQuantityFromSessionCart';
+    if (Auth::check()) {
+        $editItemQuantityFromCartMethod = 'EditItemQuantityFromUserCart';
+    }
+
+    return App::call([new CartController, $editItemQuantityFromCartMethod]);
+});

@@ -15,6 +15,17 @@
                         <button type="button" class="btn-close float-end delete-cart-item" aria-label="Close"></button>
                         <h5 class="card-title cart-item-title">Goods name</h5>
                         <p class="card-text cart-item-price">$81,000</p>
+                        <div class="input-group">
+                            <span class="input-group-text">Quantity: </span>
+                            <div class="dropdown">
+                                <button class="btn btn-light dropdown-toggle quantity-dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">Make your choice.</button>
+                                <ul class="dropdown-menu">
+                                    @for ($i = 1; $i <= 20; $i++)
+                                        <li><a class="dropdown-item" data-goods-id="" data-quantity="{{ $i }}" href="#">{{ $i }}</a></li>
+                                    @endfor
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

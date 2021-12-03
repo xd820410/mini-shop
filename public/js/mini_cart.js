@@ -16,10 +16,8 @@ async function refreshMiniCartContent() {
         console.log('mini cart', response)
         var total = 0
         var subtoal = 0
-        var totalText = ''
         var subtotalText = ''
         await jQuery.each(response.content, function(key, item) {
-        //await response.content.forEach(function(goods) {
             jQuery("#cart-item-card-sample").clone().appendTo(jQuery("#cart-item-list"))
             jQuery(".cart-item-card-sample").last().attr('id', 'cart-item-' + item.goods_id)
             jQuery("#cart-item-" + item.goods_id + " .cart-item-title").text(item.title)
@@ -31,6 +29,10 @@ async function refreshMiniCartContent() {
                 jQuery("#cart-item-" + item.goods_id + " .cart-item-image").attr('src', baseUrl + item.image_path)
             }
             jQuery("#cart-item-" + item.goods_id + " .delete-cart-item").data('goods-id', item.goods_id)
+            //quantity
+            jQuery("#cart-item-" + item.goods_id + " .quantity-dropdown").attr('id', 'cart-item-quantity-' + item.goods_id)
+            jQuery("#cart-item-quantity-" + item.goods_id).text(item.quantity)
+            jQuery("#cart-item-" + item.goods_id + " .dropdown-item").data('goods-id', item.goods_id)
             jQuery("#cart-item-" + item.goods_id).show()
         })
 
@@ -38,9 +40,32 @@ async function refreshMiniCartContent() {
         jQuery("#cart-total-block").show()
 
         bindDeleteItemFromCartEvent()
+        bindEditItemQuantityFromCartEvent()
     } else {
         jQuery("#cart-item-list").append('<p><small>Let\'s get something awesome!</small></p>')
     }
+}
+
+function bindEditItemQuantityFromCartEvent() {
+    jQuery(".dropdown-item").unbind().click(function() {
+        //if you change the quantity
+        if (jQuery(this).data('quantity') != jQuery("#cart-item-quantity-" + jQuery(this).data('goods-id')).text()) {
+            // console.log('goods-id to edit quantity', jQuery(this).data('goods-id'))
+            // console.log('quantity', jQuery(this).data('quantity'))
+            var sendData = new Object()
+            sendData.goods_id = jQuery(this).data('goods-id')
+            sendData.quantity = jQuery(this).data('quantity')
+            sendData._token = document.head.querySelector('meta[name="csrf-token"]').content
+    
+            jQuery.post(baseUrl + '/edit_item_quantity_from_cart', sendData)
+            .done(function(response) {
+                console.log('EditItemQuantityFromCart response', response)
+                refreshMiniCartContent()
+            }).fail(function() {
+                console.log('fail to EditItemQuantityFromCart')
+            })
+        }
+    })
 }
 
 function bindDeleteItemFromCartEvent() {
