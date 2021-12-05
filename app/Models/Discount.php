@@ -21,4 +21,14 @@ class Discount extends Model
     protected $casts = [
         'payload' => 'array',
     ];
+
+    //payload sample
+    /*
+    {
+        "affected": [158],
+        "threshold": 2,
+        "discount_type": "percent",
+        "discount_value": 20,
+    }
+    */
 }
