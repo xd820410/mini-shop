@@ -57,4 +57,9 @@ class DiscountService
         }
         $this->discountRepository->deleteById($id);
     }
+
+    public function getByDate($date)
+    {
+        return $this->discountRepository->getByDate($date);
+    }
 }

@@ -37,4 +37,12 @@ class DiscountRepository
     {
         return $this->model->where('id', $id)->delete();
     }
+
+    public function getByDate($date)
+    {
+        return $this->model
+            ->where('start_at', '>=', $date)
+            ->where('end_at', '<', $date)
+            ->get();
+    }
 }
