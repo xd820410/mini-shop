@@ -41,8 +41,8 @@ class DiscountRepository
     public function getByDate($date)
     {
         return $this->model
-            ->where('start_at', '>=', $date)
-            ->where('end_at', '<', $date)
+            ->where('start_at', '<=', $date)
+            ->where('end_at', '>', $date)
             ->get();
     }
 }
