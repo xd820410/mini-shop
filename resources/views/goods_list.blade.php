@@ -32,7 +32,7 @@
         <div class="col-4 mb-3 goods-card-sample" id="goods-card-sample" style="display: none;">
             <div class="card" style="width: 100%;">
                 <img src="{{ asset('images/coming_soon.jpg') }}" class="card-img-top goods-image" onError="this.src='/images/coming_soon.jpg';" style="width: 100%;">
-                <div class="card-img-overlay">
+                <div class="card-img-overlay" style="height: 50%;">
                     <small style="color: #084298; background-color: #cfe2ff; font-weight: bold; display: none;" class="goods-discount-title rounded"></small>
                 </div>
                 <div class="card-body">
