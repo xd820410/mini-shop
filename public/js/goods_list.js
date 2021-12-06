@@ -6,11 +6,17 @@ jQuery(function() {
 
 async function showGoodsList() {
     var response = await getGoodsList()
-    console.log(response)
+    console.log('showGoodsList response', response)
     if (typeof response == 'object' && response.result == 'SUCCESS' && response.message.length > 0) {
         await response.message.forEach(function(goods) {
             jQuery("#goods-card-sample").clone().appendTo(jQuery("#goods-list"))
             jQuery(".goods-card-sample").last().attr('id', 'goods-' + goods.id)
+
+            //discount
+            jQuery("#goods-" + goods.id + " .goods-discount-title").attr('id', 'goods-discount-title-' + goods.id)
+            //jQuery("#goods-discount-title-" + goods.id).addClass('goods-discount-title-dupe')
+            //jQuery("#goods-discount-title-" + goods.id).data('goods-id', goods.id)
+
             jQuery("#goods-" + goods.id + " .goods-title").text(goods.title)
             jQuery("#goods-" + goods.id + " .goods-price").text('$' + toCurrency(goods.price))
             if (goods.image_path != null && goods.image_path != '') {
@@ -21,6 +27,45 @@ async function showGoodsList() {
         })
 
         bindAddToCartEvent()
+        showDiscount()
+    }
+}
+
+async function showDiscount() {
+    var response = await getEffectiveDiscount()
+    console.log('showDiscount response', response)
+    if (typeof response == 'object' && response.result == 'SUCCESS' && response.content.length > 0) {
+        var discountText = ''
+        var newDiscountText = ''
+        var fillDiscountList = {}
+        await response.content.forEach(function(eachDiscount) {
+            /**
+             * payload sample:
+             * {
+             *      "affected": [158],
+             *      "threshold": 2,
+             *      "discount_type": "percent",
+             *      "discount_value": 20,
+             *  }
+             */
+            if (typeof eachDiscount.payload !== 'undefined' && typeof eachDiscount.title !== 'undefined' && Object.keys(eachDiscount.payload).length > 0 && eachDiscount.title.length > 0) {
+                if (typeof eachDiscount.payload.affected !== 'undefined' && eachDiscount.payload.affected.length > 0) {
+                    eachDiscount.payload.affected.forEach(function(affectedGoodsId) {
+                        if (typeof fillDiscountList[affectedGoodsId] === 'undefined') {
+                            fillDiscountList[affectedGoodsId] = ''
+                        }
+                        if (fillDiscountList[affectedGoodsId].length > 0) {
+                            fillDiscountList[affectedGoodsId] += '<br />'
+                        }
+                        fillDiscountList[affectedGoodsId] += eachDiscount.title
+                    })
+                }
+            }
+        })
+        //console.log('fillDiscountList', fillDiscountList)
+        jQuery.each(fillDiscountList, function(goodsId, discountText) {
+            jQuery("#goods-discount-title-" + goodsId).html(discountText).show()
+        })
     }
 }
 
@@ -53,4 +98,10 @@ function getGoodsList() {
     var sendData = new Object()
 
     return jQuery.get(baseUrl + '/api/goods', sendData)
+}
+
+function getEffectiveDiscount() {
+    var sendData = new Object()
+
+    return jQuery.get(baseUrl + '/api/get_effective_discount', sendData)
 }
