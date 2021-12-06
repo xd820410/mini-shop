@@ -5,9 +5,48 @@ namespace App\Services;
 use Exception;
 use App\Repositories\CartRepository;
 use App\Repositories\GoodsRepository;
+use App\Models\Discount;
 
 class CartService
 {
+    /**
+     * $cart sample
+     * Variable $cart trans to Array already. It's just for reading construction.
+     * {"goods_158":{"goods_id":"158","quantity":1,"title":"\u6d77\u81bd\u677e\u9732\u7092\u98ef","description":null,"price":777,"image_path":"\/storage\/images\/goods\/mmBB1636561107.png"}}
+     * 
+     * $effectiveDiscount sample
+     * [{"id":1,"type":1,"title":"\u6bcf\u5169\u4ef6\u516b\u6298","payload":{"affected":[158],"threshold":2,"discount_type":"percent","discount_value":20},"start_at":"2021-12-05 11:17:36","end_at":"2024-12-06 11:17:36","created_at":"2021-12-05T03:17:36.000000Z","updated_at":null}]
+     */
+    public function calculateDiscountPrice(Array $cart, Array $effectiveDiscount)
+    {
+        foreach ($effectiveDiscount as $eachDiscount) {
+            switch ($eachDiscount['type']) {
+                //某商品滿件折
+                case Discount::type_single_goods_quantity_threshold:
+                    if (empty($eachDiscount['payload'])) {
+                        break;
+                    }
+
+                    foreach ($eachDiscount['payload']['affected'] as $affectedGoodsId) {
+                        if (!isset($cart['goods_' . $affectedGoodsId])) {
+                            break;
+                        }
+
+                        //買超過門檻
+                        $affectedGoodsQuantityInCart = $cart['goods_' . $affectedGoodsId]['quantity'];
+                        $quantityThreshold = $eachDiscount['payload']['threshold'];
+                        if ($affectedGoodsQuantityInCart >= $quantityThreshold) {
+                            $fittedQuantity = floor($affectedGoodsQuantityInCart / $quantityThreshold) * $quantityThreshold;
+
+                            // switch (type) {
+
+                            // }
+                        }
+                    }
+                    break;
+            }
+        }
+    }
 
     public function deleteItemFromUserCart($userId, $goodsId, CartRepository $cartRepository)
     {

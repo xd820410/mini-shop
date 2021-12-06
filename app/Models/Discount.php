@@ -22,7 +22,7 @@ class Discount extends Model
         'payload' => 'array',
     ];
 
-    //payload sample
+    //type1 payload sample
     /*
     {
         "affected": [158],
