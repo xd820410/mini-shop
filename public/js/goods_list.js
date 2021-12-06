@@ -35,8 +35,6 @@ async function showDiscount() {
     var response = await getEffectiveDiscount()
     console.log('showDiscount response', response)
     if (typeof response == 'object' && response.result == 'SUCCESS' && response.content.length > 0) {
-        var discountText = ''
-        var newDiscountText = ''
         var fillDiscountList = {}
         await response.content.forEach(function(eachDiscount) {
             /**
