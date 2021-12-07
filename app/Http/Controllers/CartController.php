@@ -116,12 +116,20 @@ class CartController extends Controller
         }
     }
 
-    public function getUserCart()
+    public function getUserCart(CartService $cartService, DiscountService $discountService)
     {
         try {
             $cart = App::call([new CartService, 'getUserCart'], ['userId' => Auth::user()->id]);
             if (!empty($cart)) {
                 $cart = App::call([new CartService, 'fillItemDataInCart'], ['cart' => $cart]);
+
+                $now = Carbon::now();
+                $nowString = $now->toDateTimeString();
+                $effectiveDiscount = $discountService->getByDate($nowString)->toArray();
+
+                if (!empty($effectiveDiscount)) {
+                    $cart = $cartService->calculateDiscount($cart, $effectiveDiscount);
+                }
             }
 
             $returnMessage = [
@@ -152,7 +160,7 @@ class CartController extends Controller
                 $effectiveDiscount = $discountService->getByDate($nowString)->toArray();
 
                 if (!empty($effectiveDiscount)) {
-                    //$cart = $cartService->calculateDiscountPrice($cart, $effectiveDiscount);
+                    $cart = $cartService->calculateDiscount($cart, $effectiveDiscount);
                 }
             }
 

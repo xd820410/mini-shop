@@ -10,14 +10,14 @@ use App\Models\Discount;
 class CartService
 {
     /**
-     * $cart sample
+     * $cart sample:
      * Variable $cart trans to Array already. It's just for reading construction.
-     * {"goods_158":{"goods_id":"158","quantity":1,"title":"\u6d77\u81bd\u677e\u9732\u7092\u98ef","description":null,"price":777,"image_path":"\/storage\/images\/goods\/mmBB1636561107.png"}}
+     * {"goods_158":{"goods_id":"158","quantity":1,"title":"\u6d77\u81bd\u677e\u9732\u7092\u98ef","description":null,"price":777,"image_path":"\/storage\/images\/goods\/mmBB1636561107.png","discount":[]}}
      * 
-     * $effectiveDiscount sample
+     * $effectiveDiscount sample:
      * [{"id":1,"type":1,"title":"\u6bcf\u5169\u4ef6\u516b\u6298","payload":{"affected":[158],"threshold":2,"discount_type":"percent","discount_value":20},"start_at":"2021-12-05 11:17:36","end_at":"2024-12-06 11:17:36","created_at":"2021-12-05T03:17:36.000000Z","updated_at":null}]
      */
-    public function calculateDiscountPrice(Array $cart, Array $effectiveDiscount)
+    public function calculateDiscount(Array $cart, Array $effectiveDiscount)
     {
         foreach ($effectiveDiscount as $eachDiscount) {
             switch ($eachDiscount['type']) {
@@ -29,7 +29,7 @@ class CartService
 
                     foreach ($eachDiscount['payload']['affected'] as $affectedGoodsId) {
                         if (!isset($cart['goods_' . $affectedGoodsId])) {
-                            break;
+                            continue;
                         }
 
                         //買超過門檻
@@ -38,14 +38,36 @@ class CartService
                         if ($affectedGoodsQuantityInCart >= $quantityThreshold) {
                             $fittedQuantity = floor($affectedGoodsQuantityInCart / $quantityThreshold) * $quantityThreshold;
 
-                            // switch (type) {
+                            switch ($eachDiscount['payload']['discount_type']) {
+                                case 'percent':
+                                    //無條件捨去(售價 * (discount_value / 100)) * 符合優惠數 * -1
+                                    $discount = floor($cart['goods_' . $affectedGoodsId]['price'] * ($eachDiscount['payload']['discount_value'] / 100)) * $fittedQuantity * -1;
+                                    break;
+                                case 'value':
+                                    //discount_value * 符合優惠數 * -1
+                                    $discount = $eachDiscount['payload']['discount_value'] * $fittedQuantity * -1;
+                                    break;
+                                default:
+                                    $discount = 0;
+                                    break;
+                            }
 
-                            // }
+                            if ($discount === 0) {
+                                break;
+                            }
+                            $discountData = [];
+                            $discountData['title'] = $eachDiscount['title'];
+                            $discountData['discount'] = $discount;
+                            $cart['goods_' . $affectedGoodsId]['discount'][] = $discountData;
                         }
                     }
                     break;
+                default:
+                    break;
             }
         }
+
+        return $cart;
     }
 
     public function deleteItemFromUserCart($userId, $goodsId, CartRepository $cartRepository)
@@ -100,6 +122,7 @@ class CartService
             $thisItem = [];
             if (isset($goods[$itemKey]) && !empty($goods[$itemKey])) {
                 $thisItem = array_merge($cart[$itemKey], $goods[$itemKey]);
+                $thisItem['discount'] = [];
                 unset($thisItem['id']);
                 unset($thisItem['created_at']);
                 unset($thisItem['updated_at']);
