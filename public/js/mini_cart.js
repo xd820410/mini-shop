@@ -14,29 +14,55 @@ async function refreshMiniCartContent() {
     var response = await getCart()
     if (typeof response == 'object' && response.result == 'SUCCESS' && response.content !== null && Object.keys(response.content).length > 0) {
         console.log('mini cart', response)
-        var total = 0
-        var subtoal = 0
+        var totalText = ''
+        var discountCounts = 0
+        var discountText = ''
+        var subtotal = 0
         var subtotalText = ''
         await jQuery.each(response.content, function(key, item) {
             jQuery("#cart-item-card-sample").clone().appendTo(jQuery("#cart-item-list"))
             jQuery(".cart-item-card-sample").last().attr('id', 'cart-item-' + item.goods_id)
             jQuery("#cart-item-" + item.goods_id + " .cart-item-title").text(item.title)
-            subtoal = item.price * item.quantity
-            subtotalText = '$' + toCurrency(item.price) + ' x ' + item.quantity + ' = ' + '$' + toCurrency(subtoal)
-            total += subtoal
-            jQuery("#cart-item-" + item.goods_id + " .cart-item-price").text(subtotalText)
+            subtotal = item.price * item.quantity
+            subtotalText = '$' + toCurrency(item.price) + ' x ' + item.quantity + ' ='
+            jQuery("#cart-item-" + item.goods_id + " .cart-item-price-text").text(subtotalText)
+            jQuery("#cart-item-" + item.goods_id + " .cart-item-subtotal").text('$' + toCurrency(subtotal))
             if (item.image_path != null && item.image_path != '') {
                 jQuery("#cart-item-" + item.goods_id + " .cart-item-image").attr('src', baseUrl + item.image_path)
             }
             jQuery("#cart-item-" + item.goods_id + " .delete-cart-item").data('goods-id', item.goods_id)
+
             //quantity
             jQuery("#cart-item-" + item.goods_id + " .quantity-dropdown").attr('id', 'cart-item-quantity-' + item.goods_id)
             jQuery("#cart-item-quantity-" + item.goods_id).text(item.quantity)
             jQuery("#cart-item-" + item.goods_id + " .dropdown-item").data('goods-id', item.goods_id)
+
+            //discount
+            jQuery("#cart-item-" + item.goods_id + " .discount-block").attr('id', 'cart-item-discount-block-' + item.goods_id)
+            if (typeof item.discount !== 'undefined') {
+                if (item.discount.length > 0) {
+                    discountCounts = 0
+                    item.discount.forEach(function(discountData) {
+                        jQuery("#discount-sample").clone().appendTo(jQuery("#cart-item-discount-block-" + item.goods_id))
+                        jQuery(".discount-sample").last().attr('id', 'cart-item-' + item.goods_id + '-discount-' + discountCounts)
+                        jQuery("#cart-item-" + item.goods_id + "-discount-" + discountCounts + " .discount-title").text(discountData.title)
+                        discountText = toCurrency(discountData.discount)
+                        discountText = discountText.slice(0, 1) + '$' + discountText.slice(1)
+                        jQuery("#cart-item-" + item.goods_id + "-discount-" + discountCounts + " .discount").text(discountText)
+                        jQuery("#cart-item-" + item.goods_id + "-discount-" + discountCounts).show()
+                        discountCounts++
+                    })
+                }
+            }
+
             jQuery("#cart-item-" + item.goods_id).show()
         })
 
-        jQuery("#cart-total").text('$' + toCurrency(total))
+        totalText = ''
+        if (response.total !== null) {
+            totalText = '$' + toCurrency(response.total)
+        }
+        jQuery("#cart-total").text(totalText)
         jQuery("#cart-total-block").show()
 
         bindDeleteItemFromCartEvent()

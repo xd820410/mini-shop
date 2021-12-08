@@ -22,3 +22,5 @@ Route::get('/goods', 'GoodsController@index');
 Route::middleware(['auth:sanctum', 'sanctum.can_edit'])->group(function () {
     Route::resource('/goods', 'GoodsController', ['except' => ['index', 'create', 'edit']]);
 });
+
+Route::get('/get_effective_discount', 'DiscountController@getEffectiveDiscount');

@@ -7,10 +7,12 @@ use Illuminate\Http\Response;
 use App\Http\Requests\AddToCart;
 use App\Http\Requests\EditItemQuantityFromCart;
 use App\Services\CartService;
+use App\Services\DiscountService;
 use Exception;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\App;
+use Carbon\Carbon;
 
 class CartController extends Controller
 {
@@ -114,17 +116,27 @@ class CartController extends Controller
         }
     }
 
-    public function getUserCart()
+    public function getUserCart(CartService $cartService, DiscountService $discountService)
     {
         try {
             $cart = App::call([new CartService, 'getUserCart'], ['userId' => Auth::user()->id]);
             if (!empty($cart)) {
                 $cart = App::call([new CartService, 'fillItemDataInCart'], ['cart' => $cart]);
+
+                $now = Carbon::now();
+                $nowString = $now->toDateTimeString();
+                $effectiveDiscount = $discountService->getByDate($nowString);
+
+                if (!empty($effectiveDiscount)) {
+                    $cart = $cartService->calculateDiscount($cart, $effectiveDiscount);
+                }
             }
+            $total = $cartService->calculateTotal($cart);
 
             $returnMessage = [
                 'result' => 'SUCCESS',
                 'content' => $cart,
+                'total' => $total,
             ];
 
             return response()->json($returnMessage, Response::HTTP_OK);
@@ -138,17 +150,27 @@ class CartController extends Controller
         }
     }
 
-    public function getSessionCart(CartService $cartService)
+    public function getSessionCart(CartService $cartService, DiscountService $discountService)
     {
         try {
             $cart = $cartService->getSessionCart();
             if (!empty($cart)) {
                 $cart = App::call([new CartService, 'fillItemDataInCart'], ['cart' => $cart]);
+
+                $now = Carbon::now();
+                $nowString = $now->toDateTimeString();
+                $effectiveDiscount = $discountService->getByDate($nowString);
+
+                if (!empty($effectiveDiscount)) {
+                    $cart = $cartService->calculateDiscount($cart, $effectiveDiscount);
+                }
             }
+            $total = $cartService->calculateTotal($cart);
 
             $returnMessage = [
                 'result' => 'SUCCESS',
                 'content' => $cart,
+                'total' => $total,
             ];
 
             return response()->json($returnMessage, Response::HTTP_OK);
