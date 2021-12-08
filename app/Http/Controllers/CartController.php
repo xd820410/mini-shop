@@ -131,10 +131,12 @@ class CartController extends Controller
                     $cart = $cartService->calculateDiscount($cart, $effectiveDiscount);
                 }
             }
+            $total = $cartService->calculateTotal($cart);
 
             $returnMessage = [
                 'result' => 'SUCCESS',
                 'content' => $cart,
+                'total' => $total,
             ];
 
             return response()->json($returnMessage, Response::HTTP_OK);
@@ -163,11 +165,12 @@ class CartController extends Controller
                     $cart = $cartService->calculateDiscount($cart, $effectiveDiscount);
                 }
             }
+            $total = $cartService->calculateTotal($cart);
 
             $returnMessage = [
                 'result' => 'SUCCESS',
                 'content' => $cart,
-                //'total' => $total,
+                'total' => $total,
             ];
 
             return response()->json($returnMessage, Response::HTTP_OK);

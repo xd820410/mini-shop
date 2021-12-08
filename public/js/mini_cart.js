@@ -14,6 +14,7 @@ async function refreshMiniCartContent() {
     var response = await getCart()
     if (typeof response == 'object' && response.result == 'SUCCESS' && response.content !== null && Object.keys(response.content).length > 0) {
         console.log('mini cart', response)
+        var totalText = ''
         var discountCounts = 0
         var discountText = ''
         var subtotal = 0
@@ -57,7 +58,11 @@ async function refreshMiniCartContent() {
             jQuery("#cart-item-" + item.goods_id).show()
         })
 
-        //jQuery("#cart-total").text('$' + toCurrency(total))
+        totalText = ''
+        if (response.total !== null) {
+            totalText = '$' + toCurrency(response.total)
+        }
+        jQuery("#cart-total").text(totalText)
         jQuery("#cart-total-block").show()
 
         bindDeleteItemFromCartEvent()

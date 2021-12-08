@@ -9,6 +9,26 @@ use App\Models\Discount;
 
 class CartService
 {
+    public function calculateTotal($cart)
+    {
+        if (empty($cart)) {
+            return 0;
+        }
+
+        $total = 0;
+        foreach ($cart as $cartItem) {
+            $subTotal = $cartItem['price'] * $cartItem['quantity'];
+            if (isset($cartItem['discount']) && !empty($cartItem['discount'])) {
+                foreach ($cartItem['discount'] as $discountData) {
+                    $subTotal += $discountData['discount'];
+                }
+            }
+            $total += $subTotal;
+        }
+
+        return $total;
+    }
+
     /**
      * $cart sample:
      * Variable $cart trans to Array already. It's just for reading construction.
