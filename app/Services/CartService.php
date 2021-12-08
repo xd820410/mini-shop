@@ -17,7 +17,7 @@ class CartService
      * $effectiveDiscount sample:
      * [{"id":1,"type":1,"title":"\u6bcf\u5169\u4ef6\u516b\u6298","payload":{"affected":[158],"threshold":2,"discount_type":"percent","discount_value":20},"start_at":"2021-12-05 11:17:36","end_at":"2024-12-06 11:17:36","created_at":"2021-12-05T03:17:36.000000Z","updated_at":null}]
      */
-    public function calculateDiscount(Array $cart, Array $effectiveDiscount)
+    public function calculateDiscount(Array $cart, $effectiveDiscount)
     {
         foreach ($effectiveDiscount as $eachDiscount) {
             switch ($eachDiscount['type']) {
@@ -32,9 +32,9 @@ class CartService
                             continue;
                         }
 
-                        //買超過門檻
                         $affectedGoodsQuantityInCart = $cart['goods_' . $affectedGoodsId]['quantity'];
                         $quantityThreshold = $eachDiscount['payload']['threshold'];
+                        //買超過門檻
                         if ($affectedGoodsQuantityInCart >= $quantityThreshold) {
                             $fittedQuantity = floor($affectedGoodsQuantityInCart / $quantityThreshold) * $quantityThreshold;
 

@@ -125,7 +125,7 @@ class CartController extends Controller
 
                 $now = Carbon::now();
                 $nowString = $now->toDateTimeString();
-                $effectiveDiscount = $discountService->getByDate($nowString)->toArray();
+                $effectiveDiscount = $discountService->getByDate($nowString);
 
                 if (!empty($effectiveDiscount)) {
                     $cart = $cartService->calculateDiscount($cart, $effectiveDiscount);
@@ -157,7 +157,7 @@ class CartController extends Controller
 
                 $now = Carbon::now();
                 $nowString = $now->toDateTimeString();
-                $effectiveDiscount = $discountService->getByDate($nowString)->toArray();
+                $effectiveDiscount = $discountService->getByDate($nowString);
 
                 if (!empty($effectiveDiscount)) {
                     $cart = $cartService->calculateDiscount($cart, $effectiveDiscount);
@@ -167,6 +167,7 @@ class CartController extends Controller
             $returnMessage = [
                 'result' => 'SUCCESS',
                 'content' => $cart,
+                //'total' => $total,
             ];
 
             return response()->json($returnMessage, Response::HTTP_OK);
