@@ -17,7 +17,7 @@
 <div class="row mb-3">
     <div class="col-1">
     </div>
-    <div class="col-2">
+    <!-- <div class="col-2">
         <ul class="list-group">
             <li class="list-group-item list-group-item-primary">Category</li>
             <li class="list-group-item list-group-item-light">An item</li>
@@ -26,8 +26,8 @@
             <li class="list-group-item list-group-item-light">A fourth item</li>
             <li class="list-group-item list-group-item-light">And a fifth one</li>
         </ul>
-    </div>
-    <div class="col-8">
+    </div> -->
+    <div class="col-10">
         <!-- goods card sample -->
         <div class="col-4 mb-3 goods-card-sample" id="goods-card-sample" style="display: none;">
             <div class="card" style="width: 100%;">
