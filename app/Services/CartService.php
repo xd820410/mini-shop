@@ -223,7 +223,7 @@ class CartService
 
     public function addItemToSessionCart($data)
     {
-        $data['quantity'] = (int) $data['quantity'];
+        $data['quantity'] = $data['quantity'];
         session()->put('cart.' . 'goods_' . $data['goods_id'], $data);
         
         return session()->get('cart');
