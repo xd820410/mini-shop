@@ -25,7 +25,7 @@ async function refreshMiniCartContent() {
             subtotal = item.price * item.quantity
             subtotalText = '$' + toCurrency(item.price) + ' x ' + item.quantity + ' ='
             jQuery("#cart-item-" + item.goods_id + " .cart-item-price-text").text(subtotalText)
-            jQuery("#cart-item-" + item.goods_id + " .cart-item-subtotal").text(subtotal)
+            jQuery("#cart-item-" + item.goods_id + " .cart-item-subtotal").text('$' + toCurrency(subtotal))
             if (item.image_path != null && item.image_path != '') {
                 jQuery("#cart-item-" + item.goods_id + " .cart-item-image").attr('src', baseUrl + item.image_path)
             }
