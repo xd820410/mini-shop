@@ -156,6 +156,9 @@ class CartService
     public function getUserCart($userId, CartRepository $cartRepository)
     {
         $userCart = $cartRepository->getByUserId($userId);
+        if (empty($userCart)) {
+            return $userCart;
+        }
 
         return $userCart['payload'];
     }
