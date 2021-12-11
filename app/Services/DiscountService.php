@@ -14,6 +14,13 @@ class DiscountService
         $this->discountRepository = $discountRepository;
     }
 
+    public function truncate()
+    {
+        $result = $this->discountRepository->truncate();
+
+        return $result;
+    }
+
     public function create($data)
     {
         $result = $this->discountRepository->create($data);

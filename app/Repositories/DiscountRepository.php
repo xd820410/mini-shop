@@ -13,6 +13,11 @@ class DiscountRepository
         $this->model = $model;
     }
 
+    public function truncate()
+    {
+        return $this->model->truncate();
+    }
+
     public function create($data)
     {
         return $this->model->create($data);
