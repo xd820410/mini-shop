@@ -6,6 +6,7 @@ use Exception;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
+use Illuminate\Support\Facades\File;
 use App\Repositories\GoodsRepository;
 
 class ImageProccessingService
@@ -49,6 +50,14 @@ class ImageProccessingService
             $width = $image->height();
             $height = $image->height();
             $resizeFlag = true;
+        }
+
+        if (!File::exists(storage_path('app/public/images/'))) {
+            //defaul 0755
+            File::makeDirectory(storage_path('app/public/images/'));
+        }
+        if (!File::exists(storage_path('app/public/images/goods/'))) {
+            File::makeDirectory(storage_path('app/public/images/goods/'));
         }
 
         if ($resizeFlag === true) {
