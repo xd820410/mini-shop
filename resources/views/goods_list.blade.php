@@ -29,7 +29,7 @@
     </div> -->
     <div class="col-10">
         <!-- goods card sample -->
-        <div class="col-4 mb-3 goods-card-sample" id="goods-card-sample" style="display: none;">
+        <div class="col-3 mb-3 goods-card-sample" id="goods-card-sample" style="display: none;">
             <div class="card" style="width: 100%;">
                 <img src="{{ asset('images/coming_soon.jpg') }}" class="card-img-top goods-image" onError="this.src='/images/coming_soon.jpg';" style="width: 100%;">
                 <div class="card-img-overlay" style="height: 50%;">
