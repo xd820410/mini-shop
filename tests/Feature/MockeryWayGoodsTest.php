@@ -5,20 +5,14 @@ namespace Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
-use Mockery;
-use App\Http\Controllers\GoodsController;
+use Mockery\MockInterface;
+use App\Services\GoodsService;
 
-class DependencyInMockeryWayGoodsTest extends TestCase
+class MockeryWayGoodsTest extends TestCase
 {
-    protected $mock;
-    protected $target;
-
     public function setUp(): void
     {
         parent::setUp();
-
-        $this->mock = $this->initMock(\App\Services\GoodsService::class);
-        $this->target = $this->app->make(GoodsController::class);
 
         config([
             'database.connections.mysql.database' => env('DB_TEST_DATABASE', 'test_dbname')
@@ -37,14 +31,13 @@ class DependencyInMockeryWayGoodsTest extends TestCase
         $this->token = $response->decodeResponseJson()['token'];
     }
 
-    /**
-     * 可用於模擬第三方系統回傳 ex. 簡訊、發票、問庫存  等等等
-     */
     public function test_mockerySample()
     {
-        $this->mock->shouldReceive('updateById')
-                    ->once()
-                    ->andReturn(true);
+        $this->partialMock(GoodsService::class, function (MockInterface $mock) {
+            $mock->shouldReceive('updateById')
+                ->once()
+                ->andReturn(true);
+        });
 
         $this->getToken();
         /**
@@ -57,10 +50,5 @@ class DependencyInMockeryWayGoodsTest extends TestCase
         ])->patchJson('/api/goods/948787', $requestInput);
         //dd($response);
         $response->assertNoContent();
-    }
-
-    public function tearDown(): void
-    {
-        parent::tearDown();
     }
 }

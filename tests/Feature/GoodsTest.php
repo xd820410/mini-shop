@@ -8,8 +8,6 @@ use Tests\TestCase;
 
 class GoodsTest extends TestCase
 {
-    //use RefreshDatabase;
-
     protected $token;
 
     public function setUp(): void
@@ -176,10 +174,5 @@ class GoodsTest extends TestCase
                 '不要撿'
             ]
         ];
-    }
-
-    public function tearDown(): void
-    {
-        parent::tearDown();
     }
 }
