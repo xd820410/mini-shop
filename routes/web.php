@@ -18,9 +18,7 @@ use Illuminate\Support\Facades\App;
 
 Auth::routes();
 
-Route::get('/', function () {
-    return view('goods_list');
-});
+Route::get('/', 'GoodsController@showGoodsList');
 
 Route::get('/home', 'HomeController@index')->name('home');
 
