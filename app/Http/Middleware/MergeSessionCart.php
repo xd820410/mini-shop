@@ -19,7 +19,7 @@ class MergeSessionCart
      */
     public function handle(Request $request, Closure $next)
     {
-        if ($request->session()->has('cart') && !empty($request->session()->get('cart'))) {
+        if (Auth::check() && $request->session()->has('cart') && !empty($request->session()->get('cart'))) {
             //dd($request->session()->get('cart'));
             //method inject
             App::call([new CartService, 'mergeSessionCart'], ['userId' => Auth::user()->id, 'sessionCart' => $request->session()->get('cart')]);

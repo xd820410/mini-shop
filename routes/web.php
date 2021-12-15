@@ -23,7 +23,7 @@ Route::get('/', 'GoodsController@showGoodsList');
 Route::get('/home', 'HomeController@index')->name('home');
 
 //管理員可看
-Route::group(['prefix' => 'manager', 'middleware' => ['manager', 'merge_session_cart']], function () {
+Route::group(['prefix' => 'manager', 'middleware' => ['merge_session_cart', 'manager']], function () {
     Route::get('/get_token', 'ManagerController@getToken');
     Route::get('/goods', 'ManagerController@showGoodsManager');
 });
