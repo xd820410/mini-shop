@@ -12,6 +12,10 @@ use Exception;
 
 class GoodsController extends Controller
 {
+    public function showGoodsList()
+    {
+        return view('goods_list');
+    }
     /**
      * Display a listing of the resource.
      *
