@@ -89,3 +89,5 @@ Route::post('/edit_item_quantity_from_cart', function () {
 
     return App::call([new CartController, $editItemQuantityFromCartMethod]);
 });
+
+Route::get('/check_administrator_permission', 'ManagerController@checkAdministratorPermission');

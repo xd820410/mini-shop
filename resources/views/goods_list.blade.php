@@ -53,4 +53,5 @@
 
 @section('custom_js')
 <script src="{{ asset('js/goods_list.js') }}"></script>
+<script src="{{ asset('js/navigation.js') }}"></script>
 @endsection
