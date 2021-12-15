@@ -30,10 +30,10 @@
                         </div>
                         <div class="row">
                             <div class="col-6">
-                                <p class="card-text cart-item-price-text"></p>
+                                <p class="card-text cart-item-price-text" style="font-size: 0.9rem;"></p>
                             </div>
                             <div class="col-6">
-                                <span class="cart-item-subtotal"></span>
+                                <span class="cart-item-subtotal" style="font-size: 0.9rem;"></span>
                             </div>
                         </div>
                         <div class="row">
