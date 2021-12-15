@@ -44,7 +44,7 @@
                                         <button class="btn btn-light dropdown-toggle quantity-dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">0</button>
                                         <ul class="dropdown-menu">
                                             @for ($i = 1; $i <= 20; $i++)
-                                                <li><a class="dropdown-item" data-goods-id="" data-quantity="{{ $i }}" href="#">{{ $i }}</a></li>
+                                                <li><a class="dropdown-item quantity-to-edit" data-goods-id="" data-quantity="{{ $i }}" href="#">{{ $i }}</a></li>
                                             @endfor
                                         </ul>
                                     </div>

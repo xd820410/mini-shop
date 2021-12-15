@@ -35,7 +35,7 @@ async function refreshMiniCartContent() {
             //quantity
             jQuery("#cart-item-" + item.goods_id + " .quantity-dropdown").attr('id', 'cart-item-quantity-' + item.goods_id)
             jQuery("#cart-item-quantity-" + item.goods_id).text(item.quantity)
-            jQuery("#cart-item-" + item.goods_id + " .dropdown-item").data('goods-id', item.goods_id)
+            jQuery("#cart-item-" + item.goods_id + " .quantity-to-edit").data('goods-id', item.goods_id)
 
             //discount
             jQuery("#cart-item-" + item.goods_id + " .discount-block").attr('id', 'cart-item-discount-block-' + item.goods_id)
@@ -73,7 +73,7 @@ async function refreshMiniCartContent() {
 }
 
 function bindEditItemQuantityFromCartEvent() {
-    jQuery(".dropdown-item").unbind().click(function() {
+    jQuery(".quantity-to-edit").unbind().click(function() {
         //if you change the quantity
         if (jQuery(this).data('quantity') != jQuery("#cart-item-quantity-" + jQuery(this).data('goods-id')).text()) {
             // console.log('goods-id to edit quantity', jQuery(this).data('goods-id'))
