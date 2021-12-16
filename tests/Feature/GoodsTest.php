@@ -5,6 +5,8 @@ namespace Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use App\Models\User;
+use Laravel\Sanctum\Sanctum;
 
 class GoodsTest extends TestCase
 {
@@ -16,36 +18,6 @@ class GoodsTest extends TestCase
 
         config([
             'database.connections.mysql.database' => env('DB_TEST_DATABASE', 'test_dbname')
-        ]);
-    }
-
-    public function getToken()
-    {
-        $this->postJson('/login', [
-            'email' => config('app.admin_account', 'enter admin account'),
-            'password' => config('app.admin_password', 'enter admin password'),
-            '_token' => csrf_token()
-        ]);
-        $response = $this->get('/manager/get_token');
-
-        $this->token = $response->decodeResponseJson()['token'];
-    }
-
-    //取token成功不
-    public function test_getToken()
-    {
-        $this->postJson('/login', [
-            'email' => config('app.admin_account', 'enter admin account'),
-            'password' => config('app.admin_password', 'enter admin password'),
-            '_token' => csrf_token()
-        ]);
-        $response = $this->get('/manager/get_token');
-
-        $this->token = $response->decodeResponseJson()['token'];
-
-        $response->assertJsonStructure([
-            'result',
-            'token'
         ]);
     }
 
@@ -78,10 +50,12 @@ class GoodsTest extends TestCase
      */
     public function test_creatGoodsResponseFormat($testResource, $exceptedDescription)
     {
-        $this->getToken();
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer ' . $this->token,
-        ])->postJson('/api/goods', $testResource);
+        Sanctum::actingAs(
+            User::factory()->create(),
+            ['edit']
+        );
+
+        $response = $this->postJson('/api/goods', $testResource);
         $response->assertJsonStructure([
             'result',
             'message' => [
@@ -97,10 +71,12 @@ class GoodsTest extends TestCase
      */
     public function test_creatGoodsSuccessfully($testResource, $exceptedDescription)
     {
-        $this->getToken();
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer ' . $this->token,
-        ])->postJson('/api/goods', $testResource);
+        Sanctum::actingAs(
+            User::factory()->create(),
+            ['edit']
+        );
+
+        $response = $this->postJson('/api/goods', $testResource);
         //$response->dumpHeaders();
         $response->assertCreated();
     }
@@ -112,10 +88,12 @@ class GoodsTest extends TestCase
      */
     public function test_creatGoodsDefaultValue($testResource, $exceptedDescription)
     {
-        $this->getToken();
-        $result = $this->withHeaders([
-            'Authorization' => 'Bearer ' . $this->token,
-        ])->postJson('/api/goods', $testResource);
+        Sanctum::actingAs(
+            User::factory()->create(),
+            ['edit']
+        );
+
+        $result = $this->postJson('/api/goods', $testResource);
         $goodsId = $result->decodeResponseJson()['message']['id'];
 
         $response = $this->get('/api/goods/' . $goodsId);
@@ -134,10 +112,12 @@ class GoodsTest extends TestCase
      */
     public function test_updateGoodsSuccessfully($testResource, $exceptedDescription)
     {
-        $this->getToken();
-        $result = $this->withHeaders([
-            'Authorization' => 'Bearer ' . $this->token,
-        ])->postJson('/api/goods', $testResource);
+        Sanctum::actingAs(
+            User::factory()->create(),
+            ['edit']
+        );
+
+        $result = $this->postJson('/api/goods', $testResource);
         $goodsId = $result->decodeResponseJson()['message']['id'];
 
         //$response = $this->patchJson('/api/goods/99999', $testResource);
@@ -152,10 +132,12 @@ class GoodsTest extends TestCase
      */
     public function test_failToUpdateGoods($testResource, $exceptedDescription)
     {
-        $this->getToken();
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer ' . $this->token,
-        ])->patchJson('/api/goods/99999', $testResource);
+        Sanctum::actingAs(
+            User::factory()->create(),
+            ['edit']
+        );
+
+        $response = $this->patchJson('/api/goods/99999', $testResource);
         $response->assertNotFound();
     }
 
