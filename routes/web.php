@@ -89,3 +89,6 @@ Route::post('/edit_item_quantity_from_cart', function () {
 });
 
 Route::get('/check_administrator_permission', 'ManagerController@checkAdministratorPermission');
+
+Route::get('/sleep_test', 'GoodsController@sleepTest');
+Route::get('/sleep_test_with_queue', 'GoodsController@sleepTestWithQueue');

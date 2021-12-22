@@ -9,9 +9,55 @@ use App\Http\Requests\CreateGoods;
 use Illuminate\Http\Response;
 use Illuminate\Support\Arr;
 use Exception;
+use App\Jobs\PrintGoodsData;
 
 class GoodsController extends Controller
 {
+    public function sleepTest(GoodsService $goodsService)
+    {
+        try {
+            for ($i = 1; $i <= 2000; $i++) {
+                $goodsList = $goodsService->getAll();
+            }
+            $goodsService->exportTxt($goodsList);
+
+            $returnMessage = [
+                'result' => 'SUCCESS',
+                'message' => 'good job',
+            ];
+
+            return response()->json($returnMessage, Response::HTTP_OK);
+        } catch (Exception $e) {
+            $errorMessage = [
+                'result' => 'ERROR',
+                'message' => $e->getMessage(),
+            ];
+
+            return response()->json($errorMessage, Response::HTTP_NOT_FOUND);
+        }
+    }
+
+    public function sleepTestWithQueue()
+    {
+        try {
+            PrintGoodsData::dispatch();
+            PrintGoodsData::dispatch();
+            $returnMessage = [
+                'result' => 'SUCCESS',
+                'message' => 'good job',
+            ];
+
+            return response()->json($returnMessage, Response::HTTP_OK);
+        } catch (Exception $e) {
+            $errorMessage = [
+                'result' => 'ERROR',
+                'message' => $e->getMessage(),
+            ];
+
+            return response()->json($errorMessage, Response::HTTP_NOT_FOUND);
+        }
+    }
+
     public function showGoodsList()
     {
         return view('goods_list');

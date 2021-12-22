@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Repositories\GoodsRepository;
 use Exception;
+use Illuminate\Support\Facades\Storage;
 
 class GoodsService
 {
@@ -12,6 +13,18 @@ class GoodsService
     public function __construct(GoodsRepository $goodsRepository)
     {
         $this->goodsRepository = $goodsRepository;
+    }
+
+    public function exportTxt($data)
+    {
+        //sleep(5);
+        $fileName = 'goods_' . time() . '.txt';
+        $content = '';
+        foreach ($data as $eachRow) {
+            $content .= json_encode($eachRow) . "\r\n";
+        }
+
+        Storage::put("/$fileName", $content);
     }
 
     public function create($data)
