@@ -89,3 +89,4 @@ Route::post('/edit_item_quantity_from_cart', function () {
 });
 
 Route::get('/check_administrator_permission', 'ManagerController@checkAdministratorPermission');
+Route::get('/vue_demo', 'GoodsController@showVueDemo');

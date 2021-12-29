@@ -12,6 +12,11 @@ use Exception;
 
 class GoodsController extends Controller
 {
+    public function showVueDemo()
+    {
+        return view('vue_demo');
+    }
+
     public function showGoodsList()
     {
         return view('goods_list');
