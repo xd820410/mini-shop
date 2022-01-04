@@ -35,7 +35,6 @@
         <!-- end of goods card sample -->
         <div class="row" id="goods-list">
             <goods-card
-                v-if="goodsList"
                 v-for="goods in goodsList"
                 v-bind:key="goods.id"
                 v-bind="goods"
