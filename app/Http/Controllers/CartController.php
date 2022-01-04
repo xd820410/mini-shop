@@ -8,6 +8,7 @@ use App\Http\Requests\AddToCart;
 use App\Http\Requests\EditItemQuantityFromCart;
 use App\Services\CartService;
 use App\Services\DiscountService;
+use App\Services\CheckoutService;
 use Exception;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
@@ -16,6 +17,29 @@ use Carbon\Carbon;
 
 class CartController extends Controller
 {
+    public function test($payment)
+    {
+        $paymentObject = null;
+        switch ($payment) {
+            case 'Cod':
+                $paymentObject = new \App\Libs\Payments\Cod();
+                break;
+            case 'CreditCard':
+                $paymentObject = new \App\Libs\Payments\CreditCard();
+                break;
+            default:
+                break;
+        }
+
+        $response = 'nothing';
+        if ($paymentObject !== null) {
+            $service = new CheckoutService($paymentObject);
+            $response = $service->show();
+        }
+
+        return $response;
+    }
+
     public function editItemQuantityFromUserCart(AddToCart $request)
     {
         try {
