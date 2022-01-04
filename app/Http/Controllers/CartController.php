@@ -17,27 +17,9 @@ use Carbon\Carbon;
 
 class CartController extends Controller
 {
-    public function test($payment)
+    public function test(CheckoutService $checkoutService)
     {
-        $paymentObject = null;
-        switch ($payment) {
-            case 'Cod':
-                $paymentObject = new \App\Libs\Payments\Cod();
-                break;
-            case 'CreditCard':
-                $paymentObject = new \App\Libs\Payments\CreditCard();
-                break;
-            default:
-                break;
-        }
-
-        $response = 'nothing';
-        if ($paymentObject !== null) {
-            $service = new CheckoutService($paymentObject);
-            $response = $service->show();
-        }
-
-        return $response;
+        return $checkoutService->show();
     }
 
     public function editItemQuantityFromUserCart(AddToCart $request)
