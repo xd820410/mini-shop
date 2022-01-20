@@ -7,9 +7,26 @@ use Illuminate\Http\Response;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Permission;
+use Illuminate\Support\Facades\Redis;
 
 class ManagerController extends Controller
 {
+    public function redisPractice()
+    {
+        Redis::set('name', 'Taylor2');
+        Redis::set('name2', 'huhu');
+        //$response =  Redis::get('name');
+        //Redis::flushall();
+
+        $allKeys = Redis::keys('*');
+        $response = [];
+        foreach ($allKeys as $key) {
+            $response[$key] = Redis::get($key);
+        }
+
+        return $response;
+    }
+
     public function showGoodsManager()
     {
         return view('manager.goods');
