@@ -124,8 +124,7 @@ class CartController extends Controller
                 $cart = App::call([new CartService, 'fillItemDataInCart'], ['cart' => $cart]);
 
                 $now = Carbon::now();
-                $nowString = $now->toDateTimeString();
-                $effectiveDiscount = $discountService->getByDate($nowString);
+                $effectiveDiscount = $discountService->getByDate($now);
 
                 if (!empty($effectiveDiscount)) {
                     $cart = $cartService->calculateDiscount($cart, $effectiveDiscount);
@@ -158,8 +157,7 @@ class CartController extends Controller
                 $cart = App::call([new CartService, 'fillItemDataInCart'], ['cart' => $cart]);
 
                 $now = Carbon::now();
-                $nowString = $now->toDateTimeString();
-                $effectiveDiscount = $discountService->getByDate($nowString);
+                $effectiveDiscount = $discountService->getByDate($now);
 
                 if (!empty($effectiveDiscount)) {
                     $cart = $cartService->calculateDiscount($cart, $effectiveDiscount);
