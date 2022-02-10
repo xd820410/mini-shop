@@ -24,6 +24,9 @@ class DiscountTest extends TestCase
 
         //seed裡面是 9527每兩個8折
         Artisan::call('db:seed --class=DiscountTestSeeder');
+
+        //購物車測試User
+        Artisan::call('db:seed --class=UserForTestSeeder');
     }
 
     /**
