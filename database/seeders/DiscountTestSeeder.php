@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Services\DiscountService;
-
 use Illuminate\Database\Seeder;
 
 class DiscountTestSeeder extends Seeder
