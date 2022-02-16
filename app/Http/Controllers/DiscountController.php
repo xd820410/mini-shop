@@ -14,10 +14,7 @@ class DiscountController extends Controller
     {
         try {
             $now = Carbon::now();
-            //$todayString = $now->toDateString();
-            $nowString = $now->toDateTimeString();
-
-            $result = $discountService->getByDate($nowString);
+            $result = $discountService->getByDate($now);
             $returnMessage = [
                 'result' => 'SUCCESS',
                 'content' => $result,
