@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\GoodsService;
+use App\Services\RemoteGoodsService;
 use App\Services\ImageProccessingService;
 use App\Http\Requests\CreateGoods;
 use Illuminate\Http\Response;
@@ -12,10 +13,56 @@ use Exception;
 
 class GoodsController extends Controller
 {
+    public function remoteGet(RemoteGoodsService $remoteGoodsService)
+    {
+        try {
+            $result = $remoteGoodsService->getAll();
+            $returnMessage = [
+                'result' => 'SUCCESS',
+                'message' => $result,
+            ];
+
+            return response()->json($returnMessage, Response::HTTP_OK);
+        } catch (Exception $e) {
+            $errorMessage = [
+                'result' => 'ERROR',
+                'message' => $e->getMessage(),
+            ];
+
+            return response()->json($errorMessage, Response::HTTP_NOT_FOUND);
+        }
+    }
+
+    public function remoteUpdate(RemoteGoodsService $remoteGoodsService)
+    {
+        try {
+            $token = $remoteGoodsService->getToken();
+            $remoteGoodsService->UpdateById($token, 9, [
+                'title' => '測試一下',
+                'price' => 81000,
+            ]);
+
+            $returnMessage = [
+                'result' => 'SUCCESS',
+                'content' => 'OK',
+            ];
+
+            return response()->json($returnMessage, Response::HTTP_OK);
+        } catch (Exception $e) {
+            $errorMessage = [
+                'result' => 'ERROR',
+                'message' => $e->getMessage(),
+            ];
+
+            return response()->json($errorMessage, Response::HTTP_NOT_FOUND);
+        }
+    }
+
     public function showGoodsList()
     {
         return view('goods_list');
     }
+
     /**
      * Display a listing of the resource.
      *
